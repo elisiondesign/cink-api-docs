@@ -372,81 +372,37 @@ is created only for system purposes and does not depends on any company.
         - data (array)
             - (WorldCountry)
                 - id: 1
+                - title: `Czech republic`
             - (WorldCountry)
                 - id: 2
+                - title: `USA`
 
 ### Get all world continents [GET /system/world/continents]
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 7
-            },
-            "data": [
-                {
-                    "id": 1,
-                    "title": "Asia"
-                },
-                {
-                    "id": 2,
-                    "title": "Africa"
-                },
-                {
-                    "id": 3,
-                    "title": "North America"
-                },
-                {
-                    "id": 4,
-                    "title": "South America"
-                },
-                {
-                    "id": 5,
-                    "title": "Antarctica"
-                },
-                {
-                    "id": 6,
-                    "title": "Europe"
-                },
-                {
-                    "id": 7,
-                    "title": "Oceania"
-                }
-            ]
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 2
+        - data (array)
+            - (WorldContinent)
+                - id: 1
+                - title: `Europe`
+            - (WorldContinent)
+                - id: 2
+                - title: `North America`
 
 ## User Collection [/users]
 
 ### Get user [GET /users/{id}]
 
 + Parameters
-    + id (number) - User ID
+    - id (number) - User ID
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": [
-                {
-                    "id": 1,
-                    "fullName": "Administrator",
-                    "phone": null,
-                    "role": "SUPERADMIN",
-                    "regTime": {
-                        "date": "2019-04-27 16:29:17.000000",
-                        "timezone_type": 3,
-                        "timezone": "Europe/Prague"
-                    },
-                    "lang": null,
-                    "email": "user@example.com",
-                    "googleAuthSecret": null,
-                    "googleAuthEnabled": false,
-                    "username": "user@example.com"
-                }
-            ]
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (User)
 
 ### Set user status [PUT /users/{id}/status]
 
@@ -458,20 +414,10 @@ is created only for system purposes and does not depends on any company.
         - status: `active` (string)
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": {
-                "id": 3,
-                "status": 1,
-                "deleted_at": null,
-                "company_map": 973,
-                "user_map": 3,
-                "role": 2
-            }
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (CompanyUser)
 
 ### Change user password [POST /users/{id}/change-password]
 Change another user password (generates new one).
@@ -480,15 +426,11 @@ Change another user password (generates new one).
     - id (number) - User ID
 
 + Response 200
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": {
-                "newPassword": "Fnz-%SE-8MY-5"
-            }
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (object)
+            - newPassword: `Fnz-%SE-8MY-5` (string)
 
 ### Get my user details [GET /users/me]
 
@@ -502,36 +444,17 @@ Change another user password (generates new one).
 ### Change my user details [PUT /users/me]
 
 + Request (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": {
-                "id": 1,
-                "full_name": "John Doe",
-                "phone": "505 666 777",
-                "role": "SUPERADMIN",
-                "reg_time": {
-                    "date": "2019-04-27 16:29:17.000000",
-                    "timezone_type": 3,
-                    "timezone": "Europe/Prague"
-                },
-                "lang": null,
-                "email": "user@example.com",
-                "google_auth_secret": null,
-                "google_auth_enabled": false,
-                "username": "user@example.com"
-            }
-        }
+    + Attributes
+        - fullName: `User 1` (string)
+        - email: `user@example.com` (string)
+        - phone: `+420 000 000 000` (string)
 
 + Response 200 (application/json)
-
-        {
-            "fullName": "John Doe",
-            "email": "user@example.com",
-            "phone": "505 666 777"
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (User)
 
 ### Invite user [POST /users/invite]
 
@@ -815,6 +738,10 @@ Change another user password (generates new one).
 - quantityMinimal (number)
 - quantityOptimal (number)
 - item (Item)
+
+## WorldContinent (object)
+- id: 1 (number)
+- title: `Europe` (string)
 
 ## WorldCountry (object)
 - id: 1 (number)
