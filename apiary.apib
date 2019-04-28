@@ -32,7 +32,7 @@ HTTP status | Description
 ## Dictionary
 English | Czech | Description
 --- | --- | ---
-Branch | Pobočka | -
+Branch | Pobočka | One company contains one or more branches.
 Company | Společnost | -
 Item | Položka | -
 Package | Balení | Pakcages contains multiple items with same item ID.
@@ -212,12 +212,10 @@ is created only for system purposes and does not depends on any company.
         + meta (ResponseMeta)
             + count: 2
         + data (array)
-            + (User)
+            + (CompanyUser)
                 + id: 1
-                + fullName: `User 1`
-            + (User)
+            + (CompanyUser)
                 + id: 2
-                + fullName: `User 2`
 
 ## Item Collection [/items]
 
@@ -513,7 +511,6 @@ is created only for system purposes and does not depends on any company.
         }
 
 ## User Collection [/users]
-*CZ: Uživatelé*
 
 ### Get user [GET /users/{id}]
 
@@ -679,8 +676,66 @@ Change another user password (generates new one).
             "phone": "505 666 777"
         }
 
+### Invite user [POST /users/invite]
+
++ Request (application/json)
+    + Attributes
+        - company_id: 1 (number)
+        - role_id: 1 (number)
+        - email: `user2@example.com` (string)
+        - full_nume: `Invited User` (string)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+        - data (object)
+            - new: true (boolean)
+            - user (object)
+                - id: 2 (number)
+
+### Forgotten password: request [POST /users/forgotten-password]
+
++ Request (application/json)
+    + Attributes
+        - username: `user@example.com` (string)
+        - captcha (string, nullable) Recaptcha validation
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+        - data (ResponseBlank)
+        
+### Forgotten password: finish request [POST /users/forgotten-password/finish]
+
++ Request (application/json)
+    + Attributes
+        - token (string)
+        - newPassword (string)
+        - captcha (string, nullable) Recaptcha validation
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+        - data (ResponseBlank)
+
+### Registration [POST /users/register]
+
++ Request (application/json)
+    + Attributes
+        - email (string)
+        - phone (string)
+        - full_name (string)
+        - password (string)
+        - captcha (string, nullable) Recaptcha validation
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+        - data (object)
+            - user (object)
+                - id: 2 (number)
+
 ## Warehouse Collection [/warehouses]
-*CZ: Sklady*
 
 ### Get warehouse details [GET /warehouses/{id}]
 
@@ -1193,6 +1248,26 @@ Change another user password (generates new one).
                             + id: 1
                             + name: `Pomerančový džus 0,3l`
                             + deletedAt: null
+
+### Get warehouse item details [GET /warehouses/{warehouse_id}/items/{item_id}]
+
++ Parameters
+    + warehouse_id (number) - Warehouse ID
+    + item_id (number) - Warehouse ID
+
++ Response 200 (application/json)
+
+    + Attributes
+        + meta (ResponseMeta)
+            + count: 1
+        + data (array)
+            + (WarehouseItem)
+                + id: 1
+                + quantity: 8.0000
+                + item (Item)
+                    + id: 1
+                    + name: `Pomerančový džus 0,3l`
+                    + deletedAt: null
 
 
 ### Get all packages [GET /warehouses/{id}/packages]
