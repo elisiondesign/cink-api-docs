@@ -93,48 +93,48 @@ Warehouse | Sklad | -
 
 + Response 200 (application/json)
     + Attributes
-        + meta (ResponseMeta)
-            + count: 2
-        + data (array)
-            + (Branch)
-                + id: 1
-                + name: `Branch 1`
-            + (Branch)
-                + id: 2
-                + name: `Branch 2`
+        - meta (ResponseMeta)
+            - count: 2
+        - data (array)
+            - (Branch)
+                - id: 1
+                - name: `Branch 1`
+            - (Branch)
+                - id: 2
+                - name: `Branch 2`
 
 ### Get branch [GET /branches/{id}]
 
 + Parameters
-    + id (number) - Branch ID
+    - id (number) - Branch ID
 
 + Response 200 (application/json)
     + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + data (array)
-            + (Branch)
-                + id: 1
-                + name: `Branch 1`
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Branch)
+                - id: 1
+                - name: `Branch 1`
 
 ### List associated warehouses [GET /branches/{id}/warehouses]
 
 + Parameters
-    + id (number) - Branch ID
+    - id (number) - Branch ID
 
 + Response 200 (application/json)
     + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + data (array)
-            + (Branch)
-                + warehouses (array)
-                    + (Warehouse)
-                        + id: 1
-                        + name: `Central warehouse`
-                    + (Warehouse)
-                        + id: 2
-                        + name: `Kitchen`
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Branch)
+                - warehouses (array)
+                    - (Warehouse)
+                        - id: 1
+                        - name: `Central warehouse`
+                    - (Warehouse)
+                        - id: 2
+                        - name: `Kitchen`
 
 ## Cash desk [/cash-desk]
 Cash system related endpoints.
@@ -158,232 +158,168 @@ is created only for system purposes and does not depends on any company.
 
 + Request (application/json)
     + Attributes
-        + bill: 2031921 (number)
+        - bill: 2031921 (number)
 
 + Response 200 (application/json)
     + Attributes (ResponseBlank)
             
 + Response 404 
     + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + error (ResponseError)
-            + message: `Sale item was not found`
+        - meta (ResponseMeta)
+            - count: 1
+        - error (ResponseError)
+            - message: `Sale item was not found`
 
 ## Company Collection [/companies]
 
 ### Get company details [GET /companies/{id}]
 
 + Parameters
-    + id (number) - Company ID
+    - id (number) - Company ID
 
-+ Response 201 (application/json)
-    + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + data (array)
-            + (Company)
++ Response 200 (application/json)
+    - Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Company)
 
 ### Create company [POST /companies]
 
 + Request (application/json)
-
-        {
-            "name": "Coca Cola ltd.",
-            "registrationNumber": "{{$randomInt}}",
-            "vatNumber":  "{{$randomInt}}",
-            "city": "Brno",
-            "postalCode": "663 00",
-            "street": "Kounicova",
-            "country": 250
-        }
+    + Attributes
+        - name: `Coca Cola ltd.` (string)
+        - registrationNumber: `123456789` (string)
+        - vatNumber:  `CZ123456789` (string)
+        - city: `Brno` (string)
+        - postalCode: `663 00` (string)
+        - street: `Kounicova` (string)
+        - country: 250 (number)
 
 + Response 201 (application/json)
     + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + data (array)
-            + (Company)
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Company)
 
 ### Get users [GET /companies/users]
 
 + Response 200 (application/json)
     + Attributes
-        + meta (ResponseMeta)
-            + count: 2
-        + data (array)
-            + (CompanyUser)
-                + id: 1
-            + (CompanyUser)
-                + id: 2
+        - meta (ResponseMeta)
+            - count: 2
+        - data (array)
+            - (CompanyUser)
+                - id: 1
+            - (CompanyUser)
+                - id: 2
 
 ## Item Collection [/items]
 
 ### Create new item [POST /items]
 
 + Request (application/json)
-
-        {
-            "name": "Coca-Cola",
-            "unit": 2,
-            "code": "cc"
-        }
+    + Attributes
+        - name: `Coca-Cola` (string)
+        - unit: 2 (number)
+        - code: `cc` (string)
 
 + Response 201 (application/json)
     + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + data (array)
-            + (Item)
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Item)
 
 ## Package Collection [/packages]
 
 ### Get package [GET /packages/{id}]
 
 + Parameters
-    + id (number) - Recipe ID
+    - id (number) - Recipe ID
 
 + Response 200 (application/json)
     + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + data (array)
-            + (Package)
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Package)
 
 ### Create package [POST /packages]
 
 + Request (application/json)
-
-        {
-            "name": "Coca-Cola 6pc pack",
-            "item": 2,
-            "quantity": 6
-        }
+    + Attributes
+        - name: `Coca-Cola 6pc pack` (string)
+        - item: 2 (number)
+        - quantity: 6 (number)
 
 + Response 201 (application/json)
     + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + data (array)
-            + (Package)
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Package)
 
 ## Recipe Collection [/recipes]
 
 ### Get recipe [GET /recipes/{id}]
 
 + Parameters
-    + id (number) - Recipe ID
+    - id (number) - Recipe ID
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": [
-                {
-                    "id": 1,
-                    "name": "Recipe one",
-                    "deletedAt": null,
-                    "items": [
-                        {
-                            "id": 1,
-                            "quantity": 4,
-                            "item": {
-                                "name": "Jahodový džus 0,3l",
-                                "id": 3,
-                                "createdTime": {
-                                    "date": "2019-04-27 16:29:19.000000",
-                                    "timezone_type": 3,
-                                    "timezone": "Europe/Prague"
-                                },
-                                "code": null,
-                                "deletedAt": null
-                            }
-                        },
-                        {
-                            "id": 2,
-                            "quantity": 4,
-                            "item": {
-                                "name": "Mouka",
-                                "id": 9,
-                                "createdTime": {
-                                    "date": "2019-04-27 16:29:19.000000",
-                                    "timezone_type": 3,
-                                    "timezone": "Europe/Prague"
-                                },
-                                "code": null,
-                                "deletedAt": null
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Recipe)
+                - items (array)
+                    - (Item)
+                        - id: 1
+                        - name: `Item 1`
+                    - (Item)
+                        - id: 2
+                        - name: `Item 2`
 
 ### Create recipe [POST /recipes]
 
 + Request (application/json)
-
-        {
-            "name": "Steak with chips"
-        }
+    + Attributes
+        - name: "Steak with chips" (string)
 
 + Response 201 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": {
-                "id": null,
-                "name": "Steak with chips",
-                "deleted_at": null,
-                "company": 973
-            }
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (Recipe)
 
 ### Add item to recipe [POST /recipes/item]
 
 + Request (application/json)
-
-        {
-            "item": 2,
-            "recipe": 2,
-            "quantity": 5
-        }
+    + Attributes
+        - item: 2 (number)
+        - recipe: 2 (number)
+        - quantity: 5 (number)
 
 + Response 201 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": {
-                "id": null,
-                "quantity": 5,
-                "item": 2,
-                "recipe": 2
-            }
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (RecipeItem)
 
 ### Remove item from recipe [DELETE /recipes/item]
 
 + Request (application/json)
-
-        {
-            "item": 2,
-            "recipe": 2
-        }
+    + Attributes
+        - item: 2 (number)
+        - recipe: 2 (number)
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": []
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (ResponseBlank)
 
 ### Load recipe [PATCH /recipes/{id}/move]
 
@@ -391,43 +327,33 @@ is created only for system purposes and does not depends on any company.
     + id (number) - Recipe ID
 
 + Request (application/json)
-
-        {
-            "warehouse": 5,
-            "action": "load",
-            "count": 10
-        }
+    + Attributes
+        - warehouse: 5 (number)
+        - action: `load` (string)
+        - count: 10 (number)
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": []
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (ResponseBlank)
 
 ### Transfer recipe [PATCH /recipes/{id}/transfer]
 
 + Parameters
-    + id (number) - Recipe ID
+    - id (number) - Recipe ID
 
 + Request (application/json)
-
-        {
-            "warehouseFrom": 6,
-            "warehouseTo": 5,
-            "count": 1
-        }
+    + Attributes
+        - warehouseFrom: 1 (number)
+        - warehouseTo: 2 (number)
+        - count: 10 (number)
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": []
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (ResponseBlank)
 
 ## System [/system]
 
@@ -440,35 +366,14 @@ is created only for system purposes and does not depends on any company.
 ### Get all world countries [GET /system/world/countries]
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 3
-            },
-            "data": [
-                {
-                    "id": 1,
-                    "title": "United Arab Emirates",
-                    "alpha2": "AE",
-                    "alpha3": "ARE",
-                    "numeric": "784"
-                },
-                {
-                    "id": 22,
-                    "title": "Bahrain",
-                    "alpha2": "BH",
-                    "alpha3": "BHR",
-                    "numeric": "48"
-                },
-                {
-                    "id": 55,
-                    "title": "Czech Republic",
-                    "alpha2": "CZ",
-                    "alpha3": "CZE",
-                    "numeric": "203"
-                }
-            ]
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (WorldCountry)
+                - id: 1
+            - (WorldCountry)
+                - id: 2
 
 ### Get all world continents [GET /system/world/continents]
 
@@ -546,13 +451,11 @@ is created only for system purposes and does not depends on any company.
 ### Set user status [PUT /users/{id}/status]
 
 + Parameters
-    + id (number) - User ID
+    - id (number) - User ID
 
 + Request (application/json)
-
-        {
-            "status": "active"
-        }
+    + Attributes
+        - status: `active` (string)
 
 + Response 200 (application/json)
 
@@ -574,7 +477,7 @@ is created only for system purposes and does not depends on any company.
 Change another user password (generates new one).
 
 + Parameters
-    + id (number) - User ID
+    - id (number) - User ID
 
 + Response 200
 
@@ -589,58 +492,12 @@ Change another user password (generates new one).
 
 ### Get my user details [GET /users/me]
 
-+ Response 200
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": [
-                {
-                    "id": 1,
-                    "status": 1,
-                    "deletedAt": null,
-                    "companyMap": {
-                        "id": 973,
-                        "creationTime": {
-                            "date": "2019-04-27 16:29:18.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "updateTime": {
-                            "date": "2019-04-27 16:29:18.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "name": "Testovací společnost s.r.o.",
-                        "registrationNumber": "3521194",
-                        "vatNumber": null,
-                        "street": "Downing street 1",
-                        "city": "London",
-                        "postalCode": "666 66",
-                        "businessType": false,
-                        "affiliate": null,
-                        "syncAres": "1"
-                    },
-                    "userMap": {
-                        "id": 1,
-                        "fullName": "Administrator",
-                        "phone": null,
-                        "role": "SUPERADMIN",
-                        "regTime": {
-                            "date": "2019-04-27 16:29:17.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "lang": null,
-                        "email": "user@example.com",
-                        "googleAuthSecret": null,
-                        "googleAuthEnabled": false,
-                        "username": "user@example.com"
-                    }
-                }
-            ]
-        }
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (CompanyUser)
 
 ### Change my user details [PUT /users/me]
 
@@ -740,580 +597,121 @@ Change another user password (generates new one).
 ### Get warehouse details [GET /warehouses/{id}]
 
 + Parameters
-    + id (number) - Warehouse ID
+    - id (number) - Warehouse ID
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": [
-                {
-                    "name": "Catering",
-                    "description": null,
-                    "id": 5,
-                    "deletedAt": null,
-                    "branch": {
-                        "id": 863,
-                        "createTime": {
-                            "date": "2019-04-27 16:29:18.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "updateTime": {
-                            "date": "2019-04-27 16:29:18.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "status": true,
-                        "name": "Pobočka Na Úvoze",
-                        "addressStreet": "dummy",
-                        "addressCity": "dummy",
-                        "addressPostalCode": "111",
-                        "logo": null
-                    }
-                }
-            ]
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Warehouse)
 
 ### Create new warehouse [POST /warehouses]
 
 + Request (application/json)
-
-        {
-            "name": "Central warehouse",
-            "description": "Test description",
-            "branch": {
-                "id": "863"
-            }
-        }
+    + Attributes
+        - name: `Central warehouse` (string)
+        - description: `Test description` (string)
+        - branch (object)
+            - id: 863 (number)    
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": {
-                "name": "Central warehouse",
-                "description": "Test description",
-                "id": null,
-                "deleted_at": null,
-                "company": 973,
-                "branch": 863
-            }
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Warehouse)
 
 ### Get all transactions [GET /warehouses/transactions]
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 8
-            },
-            "data": [
-                {
-                    "quantityChange": "20.0000",
-                    "id": 1,
-                    "createdTime": {
-                        "date": "2019-04-27 18:47:51.000000",
-                        "timezone_type": 3,
-                        "timezone": "Europe/Prague"
-                    },
-                    "action": "load",
-                    "warehouse": {
-                        "name": "Catering",
-                        "description": null,
-                        "id": 5,
-                        "deletedAt": null
-                    },
-                    "user": {
-                        "id": 1,
-                        "fullName": "Administrator",
-                        "phone": null,
-                        "role": "SUPERADMIN",
-                        "regTime": {
-                            "date": "2019-04-27 16:29:17.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "lang": null,
-                        "email": "user@example.com",
-                        "googleAuthSecret": null,
-                        "googleAuthEnabled": false,
-                        "username": "user@example.com"
-                    },
-                    "item": {
-                        "name": "Moučné placky",
-                        "id": 18,
-                        "createdTime": {
-                            "date": "2019-04-27 16:29:19.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "code": null,
-                        "deletedAt": null,
-                        "unit": {
-                            "id": 6,
-                            "name": "kilogram",
-                            "abbreviation": "kg",
-                            "allowDecimal": true,
-                            "ratio": 1000
-                        }
-                    },
-                    "package": null
-                },
-                {
-                    "quantityChange": "70.0000",
-                    "id": 2,
-                    "createdTime": {
-                        "date": "2019-04-27 18:47:51.000000",
-                        "timezone_type": 3,
-                        "timezone": "Europe/Prague"
-                    },
-                    "action": "load",
-                    "warehouse": {
-                        "name": "Catering",
-                        "description": null,
-                        "id": 5,
-                        "deletedAt": null
-                    },
-                    "user": {
-                        "id": 1,
-                        "fullName": "Administrator",
-                        "phone": null,
-                        "role": "SUPERADMIN",
-                        "regTime": {
-                            "date": "2019-04-27 16:29:17.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "lang": null,
-                        "email": "cink@cinkeet.cz",
-                        "googleAuthSecret": null,
-                        "googleAuthEnabled": false,
-                        "username": "cink@cinkeet.cz"
-                    },
-                    "item": {
-                        "name": "Medovník",
-                        "id": 19,
-                        "createdTime": {
-                            "date": "2019-04-27 16:29:19.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "code": null,
-                        "deletedAt": null,
-                        "unit": {
-                            "id": 5,
-                            "name": "unit",
-                            "abbreviation": "unit",
-                            "allowDecimal": true,
-                            "ratio": 1
-                        }
-                    },
-                    "package": null
-                },
-                {
-                    "quantityChange": "20.0000",
-                    "id": 3,
-                    "createdTime": {
-                        "date": "2019-04-27 18:47:56.000000",
-                        "timezone_type": 3,
-                        "timezone": "Europe/Prague"
-                    },
-                    "action": "load",
-                    "warehouse": {
-                        "name": "Catering",
-                        "description": null,
-                        "id": 5,
-                        "deletedAt": null
-                    },
-                    "user": {
-                        "id": 1,
-                        "fullName": "Administrator",
-                        "phone": null,
-                        "role": "SUPERADMIN",
-                        "regTime": {
-                            "date": "2019-04-27 16:29:17.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "lang": null,
-                        "email": "cink@cinkeet.cz",
-                        "googleAuthSecret": null,
-                        "googleAuthEnabled": false,
-                        "username": "cink@cinkeet.cz"
-                    },
-                    "item": {
-                        "name": "Moučné placky",
-                        "id": 18,
-                        "createdTime": {
-                            "date": "2019-04-27 16:29:19.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "code": null,
-                        "deletedAt": null,
-                        "unit": {
-                            "id": 6,
-                            "name": "kilogram",
-                            "abbreviation": "kg",
-                            "allowDecimal": true,
-                            "ratio": 1000
-                        }
-                    },
-                    "package": null
-                },
-                {
-                    "quantityChange": "70.0000",
-                    "id": 4,
-                    "createdTime": {
-                        "date": "2019-04-27 18:47:56.000000",
-                        "timezone_type": 3,
-                        "timezone": "Europe/Prague"
-                    },
-                    "action": "load",
-                    "warehouse": {
-                        "name": "Catering",
-                        "description": null,
-                        "id": 5,
-                        "deletedAt": null
-                    },
-                    "user": {
-                        "id": 1,
-                        "fullName": "Administrator",
-                        "phone": null,
-                        "role": "SUPERADMIN",
-                        "regTime": {
-                            "date": "2019-04-27 16:29:17.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "lang": null,
-                        "email": "cink@cinkeet.cz",
-                        "googleAuthSecret": null,
-                        "googleAuthEnabled": false,
-                        "username": "cink@cinkeet.cz"
-                    },
-                    "item": {
-                        "name": "Medovník",
-                        "id": 19,
-                        "createdTime": {
-                            "date": "2019-04-27 16:29:19.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "code": null,
-                        "deletedAt": null,
-                        "unit": {
-                            "id": 5,
-                            "name": "unit",
-                            "abbreviation": "unit",
-                            "allowDecimal": true,
-                            "ratio": 1
-                        }
-                    },
-                    "package": null
-                },
-                {
-                    "quantityChange": "-4.0000",
-                    "id": 5,
-                    "createdTime": {
-                        "date": "2019-04-27 18:52:20.000000",
-                        "timezone_type": 3,
-                        "timezone": "Europe/Prague"
-                    },
-                    "action": "unload",
-                    "warehouse": {
-                        "name": "Kuchyně",
-                        "description": null,
-                        "id": 6,
-                        "deletedAt": null
-                    },
-                    "user": {
-                        "id": 1,
-                        "fullName": "Administrator",
-                        "phone": null,
-                        "role": "SUPERADMIN",
-                        "regTime": {
-                            "date": "2019-04-27 16:29:17.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "lang": null,
-                        "email": "cink@cinkeet.cz",
-                        "googleAuthSecret": null,
-                        "googleAuthEnabled": false,
-                        "username": "cink@cinkeet.cz"
-                    },
-                    "item": {
-                        "name": "Jahodový džus 0,3l",
-                        "id": 3,
-                        "createdTime": {
-                            "date": "2019-04-27 16:29:19.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "code": null,
-                        "deletedAt": null,
-                        "unit": {
-                            "id": 9,
-                            "name": "decilitter",
-                            "abbreviation": "dl",
-                            "allowDecimal": true,
-                            "ratio": 100
-                        }
-                    },
-                    "package": null
-                },
-                {
-                    "quantityChange": "4.0000",
-                    "id": 6,
-                    "createdTime": {
-                        "date": "2019-04-27 18:52:20.000000",
-                        "timezone_type": 3,
-                        "timezone": "Europe/Prague"
-                    },
-                    "action": "load",
-                    "warehouse": {
-                        "name": "Catering",
-                        "description": null,
-                        "id": 5,
-                        "deletedAt": null
-                    },
-                    "user": {
-                        "id": 1,
-                        "fullName": "Administrator",
-                        "phone": null,
-                        "role": "SUPERADMIN",
-                        "regTime": {
-                            "date": "2019-04-27 16:29:17.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "lang": null,
-                        "email": "cink@cinkeet.cz",
-                        "googleAuthSecret": null,
-                        "googleAuthEnabled": false,
-                        "username": "cink@cinkeet.cz"
-                    },
-                    "item": {
-                        "name": "Jahodový džus 0,3l",
-                        "id": 3,
-                        "createdTime": {
-                            "date": "2019-04-27 16:29:19.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "code": null,
-                        "deletedAt": null,
-                        "unit": {
-                            "id": 9,
-                            "name": "decilitter",
-                            "abbreviation": "dl",
-                            "allowDecimal": true,
-                            "ratio": 100
-                        }
-                    },
-                    "package": null
-                },
-                {
-                    "quantityChange": "-4.0000",
-                    "id": 7,
-                    "createdTime": {
-                        "date": "2019-04-27 18:52:20.000000",
-                        "timezone_type": 3,
-                        "timezone": "Europe/Prague"
-                    },
-                    "action": "unload",
-                    "warehouse": {
-                        "name": "Kuchyně",
-                        "description": null,
-                        "id": 6,
-                        "deletedAt": null
-                    },
-                    "user": {
-                        "id": 1,
-                        "fullName": "Administrator",
-                        "phone": null,
-                        "role": "SUPERADMIN",
-                        "regTime": {
-                            "date": "2019-04-27 16:29:17.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "lang": null,
-                        "email": "cink@cinkeet.cz",
-                        "googleAuthSecret": null,
-                        "googleAuthEnabled": false,
-                        "username": "cink@cinkeet.cz"
-                    },
-                    "item": {
-                        "name": "Mouka",
-                        "id": 9,
-                        "createdTime": {
-                            "date": "2019-04-27 16:29:19.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "code": null,
-                        "deletedAt": null,
-                        "unit": {
-                            "id": 3,
-                            "name": "litter",
-                            "abbreviation": "l",
-                            "allowDecimal": true,
-                            "ratio": 1000
-                        }
-                    },
-                    "package": null
-                },
-                {
-                    "quantityChange": "4.0000",
-                    "id": 8,
-                    "createdTime": {
-                        "date": "2019-04-27 18:52:20.000000",
-                        "timezone_type": 3,
-                        "timezone": "Europe/Prague"
-                    },
-                    "action": "load",
-                    "warehouse": {
-                        "name": "Catering",
-                        "description": null,
-                        "id": 5,
-                        "deletedAt": null
-                    },
-                    "user": {
-                        "id": 1,
-                        "fullName": "Administrator",
-                        "phone": null,
-                        "role": "SUPERADMIN",
-                        "regTime": {
-                            "date": "2019-04-27 16:29:17.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "lang": null,
-                        "email": "cink@cinkeet.cz",
-                        "googleAuthSecret": null,
-                        "googleAuthEnabled": false,
-                        "username": "cink@cinkeet.cz"
-                    },
-                    "item": {
-                        "name": "Mouka",
-                        "id": 9,
-                        "createdTime": {
-                            "date": "2019-04-27 16:29:19.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "code": null,
-                        "deletedAt": null,
-                        "unit": {
-                            "id": 3,
-                            "name": "litter",
-                            "abbreviation": "l",
-                            "allowDecimal": true,
-                            "ratio": 1000
-                        }
-                    },
-                    "package": null
-                }
-            ]
-        }
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 2
+        - data (array)
+            - (Transaction)
+            - (Transaction)
 
 ### Get all items [GET /warehouses/{id}/items]
 
 + Parameters
-    + id (number) - Warehouse ID
+    - id (number) - Warehouse ID
 
 + Response 200 (application/json)
-
     + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + data (array)
-            + (Warehouse)
-                + id: 5
-                + name: Catering
-                + deletedAt: null
-                + items (array)
-                    + (WarehouseItem)
-                        + id: 1
-                        + quantity: 8.0000
-                        + item (Item)
-                            + id: 1
-                            + name: `Pomerančový džus 0,3l`
-                            + deletedAt: null
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Warehouse)
+                - id: 5
+                - name: Catering
+                - deletedAt: null
+                - items (array)
+                    - (WarehouseItem)
+                        - id: 1
+                        - quantity: 8.0000
+                        - item (Item)
+                            - id: 1
+                            - name: `Pomerančový džus 0,3l`
+                            - deletedAt: null
 
 ### Get warehouse item details [GET /warehouses/{warehouse_id}/items/{item_id}]
 
 + Parameters
-    + warehouse_id (number) - Warehouse ID
-    + item_id (number) - Warehouse ID
+    - warehouse_id (number) - Warehouse ID
+    - item_id (number) - Warehouse ID
 
 + Response 200 (application/json)
-
     + Attributes
-        + meta (ResponseMeta)
-            + count: 1
-        + data (array)
-            + (WarehouseItem)
-                + id: 1
-                + quantity: 8.0000
-                + item (Item)
-                    + id: 1
-                    + name: `Pomerančový džus 0,3l`
-                    + deletedAt: null
-
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (WarehouseItem)
+                - id: 1
+                - quantity: 8.0000
+                - item (Item)
+                    - id: 1
+                    - name: `Pomerančový džus 0,3l`
+                    - deletedAt: null
 
 ### Get all packages [GET /warehouses/{id}/packages]
 
 + Parameters
-    + id (number) - Warehouse ID
+    - id (number) - Warehouse ID
 
 + Response 200 (application/json)
-
     + Attributes
-        + meta (ResponseMeta)
-            + count: 2
-        + data (array)
-            + (Warehouse)
-                + id: 1
-                + name: Central warehouse
-                + deletedAt: null
-            + (Warehouse)
-                + id: 2
-                + name: Kitchen
-                + deletedAt: null
+        - meta (ResponseMeta)
+            - count: 2
+        - data (array)
+            - (Warehouse)
+                - id: 1
+                - name: Central warehouse
+                - deletedAt: null
+            - (Warehouse)
+                - id: 2
+                - name: Kitchen
+                - deletedAt: null
 
 # Data structures
 
 ## ResponseMeta (object)
-
 - count: 0 (number)
 
 ## ResponseError (object)
-
 - message: `Example error` (string)
 
 ## ResponseBlank (object)
-
 - meta (ResponseMeta)
     - count: 1
 - data (array)
 
 ## DateTimeObject (object)
-
 - date: `2019-04-27 16:29:18.000000` (string)
 - timezone_type: `3` (number)
 - timezone: `Europe/Prague` (string)
 
 ## Branch (object)
-
 - id: `1` (number)
 - createTime (DateTimeObject)
 - updateTime (DateTimeObject)
@@ -1327,7 +725,6 @@ Change another user password (generates new one).
     - items: null
 
 ## Company (object)
-
 - id: `1` (number)
 - creationTime (DateTimeObject)
 - updateTime (DateTimeObject)
@@ -1342,14 +739,13 @@ Change another user password (generates new one).
 - syncAres: `1` (string)
 
 ## CompanyUser (object)
-
 - id: 1 (number)
 - status: 1 (number)
 - deletedAt (DateTimeObject)
 - userMap (User)
+- companyMap (Company)
 
 ## Item (object)
-
 - id: 1 (number)
 - name: `Homemade limo 0,5l` (string)
 - createdTime (DateTimeObject)
@@ -1358,7 +754,6 @@ Change another user password (generates new one).
 - unit (Unit)
 
 ## Unit (object)
-
 - id: 1 (number)
 - name: `kilogram` (string)
 - abbreviation: `kg` (string)
@@ -1366,15 +761,33 @@ Change another user password (generates new one).
 - ratio: 100 (number)
 
 ## Package (object)
-
 - id: 1 (number)
 - name: `Package 1` (string)
 - quantity: 6 (number)
 - deletedAt (DateTimeObject, nullable)
 - item (Item)
 
-## User (object)
+## Recipe (object)
+- id: 1 (number)
+- name: `Recipe 1` (string)
+- deletedAt (DateTimeObject, nullable)
+- items (array[Item])
+- company (Company)
 
+## RecipeItem (object)
+- id: 1 (number)
+- quantity: 5 (number)
+- item: 2 (number)
+- recipe: 2 (number)
+
+## Transaction (object)
+- id: 1 (number)
+- quantityChange: 4.0000 (number)
+- createdTime (DateTimeObject, nullable)
+- action: `load` (string)
+- warehouse (Warehouse)
+
+## User (object)
 - id: 1 (number)
 - fullName: `User 1` (string)
 - username: `user@example.com` (string)
@@ -1387,18 +800,25 @@ Change another user password (generates new one).
 - regTime (DateTimeObject)
 
 ## Warehouse (object)
-
 - id: 1 (number)
 - name: `Central warehouse` (string, required)
 - description (string)
 - deletedAt (DateTimeObject, nullable)
 - packages (array[Package])
 - items (array[WarehouseItem])
+- branch (Branch)
+- company (Company)
 
 ## WarehouseItem (object)
-
 - id: 1 (number)
 - quantity (number)
 - quantityMinimal (number)
 - quantityOptimal (number)
 - item (Item)
+
+## WorldCountry (object)
+- id: 1 (number)
+- title: `Czech Republic` (string)
+- alpha2": `CZ` (string)
+- alpha3": `CZE` (string)
+- numeric": `203` (string)
