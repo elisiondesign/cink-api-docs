@@ -36,7 +36,7 @@ Branch | Pobočka | -
 Company | Společnost | -
 Item | Položka | -
 Package | Balení | Pakcages contains multiple items with same item ID.
-Recipe | Receptura | -
+Recipe | Receptura | Recipes consists of items.
 Warehouse | Sklad | -
 
 ## Authentication [/]
@@ -246,31 +246,11 @@ is created only for system purposes and does not depends on any company.
     + id (number) - Recipe ID
 
 + Response 200 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": [
-                {
-                    "id": 6,
-                    "name": "Moučné placky 6 kg",
-                    "quantity": 6,
-                    "deletedAt": null,
-                    "item": {
-                        "name": "Moučné placky",
-                        "id": 18,
-                        "createdTime": {
-                            "date": "2019-04-27 16:29:19.000000",
-                            "timezone_type": 3,
-                            "timezone": "Europe/Prague"
-                        },
-                        "code": null,
-                        "deletedAt": null
-                    }
-                }
-            ]
-        }
+    + Attributes
+        + meta (ResponseMeta)
+            + count: 1
+        + data (array)
+            + (Package)
 
 ### Create package [POST /packages]
 
@@ -283,25 +263,13 @@ is created only for system purposes and does not depends on any company.
         }
 
 + Response 201 (application/json)
-
-        {
-            "meta": {
-                "count": 1
-            },
-            "data": {
-                "id": null,
-                "name": "Coca-Cola 6pc pack",
-                "quantity": 6,
-                "deleted_at": null,
-                "item": 2,
-                "company": 973
-            }
-        }
+    + Attributes
+        + meta (ResponseMeta)
+            + count: 1
+        + data (array)
+            + (Package)
 
 ## Recipe Collection [/recipes]
-*CZ: Receptury*
-
-Recipes consists of items.
 
 ### Get recipe [GET /recipes/{id}]
 
@@ -1311,7 +1279,7 @@ Change another user password (generates new one).
 - name: `Homemade limo 0,5l` (string)
 - createdTime (DateTimeObject)
 - code (string)
-- deletedAt (DateTimeObject)
+- deletedAt (DateTimeObject, nullable)
 - unit (Unit)
 
 ## Unit (object)
@@ -1325,6 +1293,10 @@ Change another user password (generates new one).
 ## Package (object)
 
 - id: 1 (number)
+- name: `Package 1` (string)
+- quantity: 6 (number)
+- deletedAt (DateTimeObject, nullable)
+- item (Item)
 
 ## User (object)
 
