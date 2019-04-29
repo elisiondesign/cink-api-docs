@@ -94,14 +94,9 @@ Warehouse | Sklad | -
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 2
+            - count: 1
         - data (array)
             - (Branch)
-                - id: 1
-                - name: `Branch 1`
-            - (Branch)
-                - id: 2
-                - name: `Branch 2`
 
 ### Get branch [GET /branches/{id}]
 
@@ -114,8 +109,21 @@ Warehouse | Sklad | -
             - count: 1
         - data (array)
             - (Branch)
-                - id: 1
-                - name: `Branch 1`
+
+### Put branch [PUT /branches/{id}]
+
++ Parameters
+    - id (number) - Branch ID
+
++ Request (application/json)
+    + Attributes (Branch)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Branch)
 
 ### List associated warehouses [GET /branches/{id}/warehouses]
 
@@ -130,11 +138,6 @@ Warehouse | Sklad | -
             - (Branch)
                 - warehouses (array)
                     - (Warehouse)
-                        - id: 1
-                        - name: `Central warehouse`
-                    - (Warehouse)
-                        - id: 2
-                        - name: `Kitchen`
 
 ## Cash desk [/cash-desk]
 Cash system related endpoints.
@@ -217,7 +220,16 @@ is created only for system purposes and does not depends on any company.
 
 ## Item Collection [/items]
 
-### Create new item [POST /items]
+### List items [GET /items]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Item)
+
+### Create item [POST /items]
 
 + Request (application/json)
     + Attributes
@@ -277,10 +289,8 @@ is created only for system purposes and does not depends on any company.
                 - items (array)
                     - (Item)
                         - id: 1
-                        - name: `Item 1`
                     - (Item)
                         - id: 2
-                        - name: `Item 2`
 
 ### Create recipe [POST /recipes]
 
@@ -363,7 +373,7 @@ is created only for system purposes and does not depends on any company.
 
         "pong"
 
-### Get all world countries [GET /system/world/countries]
+### List world countries [GET /system/world/countries]
 
 + Response 200 (application/json)
     + Attributes
@@ -377,7 +387,7 @@ is created only for system purposes and does not depends on any company.
                 - id: 2
                 - title: `USA`
 
-### Get all world continents [GET /system/world/continents]
+### List world continents [GET /system/world/continents]
 
 + Response 200 (application/json)
     + Attributes
@@ -402,7 +412,8 @@ is created only for system purposes and does not depends on any company.
     + Attributes
         - meta (ResponseMeta)
             - count: 1
-        - data (User)
+        - data (array)
+            - (User)
 
 ### Set user status [PUT /users/{id}/status]
 
@@ -517,7 +528,16 @@ Change another user password (generates new one).
 
 ## Warehouse Collection [/warehouses]
 
-### Get warehouse details [GET /warehouses/{id}]
+### List warehouses [GET /warehouses]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Warehouse)
+
+### Get warehouse [GET /warehouses/{id}]
 
 + Parameters
     - id (number) - Warehouse ID
@@ -545,20 +565,23 @@ Change another user password (generates new one).
         - data (array)
             - (Warehouse)
 
-### Get all transactions [GET /warehouses/transactions]
+## Warehouse Transaction Collection [/warehouses/transactions]
+
+### List transactions [GET /warehouses/transactions]
 
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 2
+            - count: 1
         - data (array)
             - (Transaction)
-            - (Transaction)
 
-### Get all items [GET /warehouses/{id}/items]
+## Warehouse Item Collection [/warehouses/{warehouse_id}/items]
+
+### List warehouse items [GET /warehouses/{warehouse_id}/items]
 
 + Parameters
-    - id (number) - Warehouse ID
+    - warehouse_id (number) - Warehouse ID
 
 + Response 200 (application/json)
     + Attributes
@@ -566,23 +589,15 @@ Change another user password (generates new one).
             - count: 1
         - data (array)
             - (Warehouse)
-                - id: 5
-                - name: Catering
-                - deletedAt: null
                 - items (array)
                     - (WarehouseItem)
-                        - id: 1
-                        - quantity: 8.0000
                         - item (Item)
-                            - id: 1
-                            - name: `Pomerančový džus 0,3l`
-                            - deletedAt: null
 
-### Get warehouse item details [GET /warehouses/{warehouse_id}/items/{item_id}]
+### Get warehouse item [GET /warehouses/{warehouse_id}/items/{item_id}]
 
 + Parameters
     - warehouse_id (number) - Warehouse ID
-    - item_id (number) - Warehouse ID
+    - item_id (number) - Warehouse Item ID
 
 + Response 200 (application/json)
     + Attributes
@@ -590,14 +605,26 @@ Change another user password (generates new one).
             - count: 1
         - data (array)
             - (WarehouseItem)
-                - id: 1
-                - quantity: 8.0000
                 - item (Item)
-                    - id: 1
-                    - name: `Pomerančový džus 0,3l`
-                    - deletedAt: null
 
-### Get all packages [GET /warehouses/{id}/packages]
+### Put warehouse item [PUT /warehouses/{warehouse_id}/items/{item_id}]
+
++ Parameters
+    - warehouse_id (number) - Warehouse ID
+    - item_id (number) - Warehouse Item ID
+
++ Request (application/json)
+    + Attributes (WarehouseItem)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (WarehouseItem)
+
+## Warehouse Package Collection [/warehouses/{id}/packages]
+
+### List warehouse packages [GET /warehouses/{id}/packages]
 
 + Parameters
     - id (number) - Warehouse ID
@@ -609,12 +636,8 @@ Change another user password (generates new one).
         - data (array)
             - (Warehouse)
                 - id: 1
-                - name: Central warehouse
-                - deletedAt: null
             - (Warehouse)
                 - id: 2
-                - name: Kitchen
-                - deletedAt: null
 
 # Data structures
 
@@ -634,6 +657,11 @@ Change another user password (generates new one).
 - timezone_type: `3` (number)
 - timezone: `Europe/Prague` (string)
 
+## DateTimeObjectNull (object)
+- date (string, nullable)
+- timezone_type (number, nullable)
+- timezone (string, nullable)
+
 ## Branch (object)
 - id: `1` (number)
 - createTime (DateTimeObject)
@@ -644,14 +672,15 @@ Change another user password (generates new one).
 - addressCity
 - addressPostalCode
 - logo (string, nullable)
-- warehouses (array[Warehouse])
-    - items: null
+- warehouses (array)
+    - (Warehouse)
+        - items: null
 
 ## Company (object)
 - id: `1` (number)
 - creationTime (DateTimeObject)
 - updateTime (DateTimeObject)
-- name: `Testing company ltd.` (string)
+- name: `Company 1 ltd.` (string)
 - registrationNumber: `3521194` (string)
 - vatNumber: `UK3521194` (string)
 - street: `Downing street 1` (string)
@@ -664,7 +693,7 @@ Change another user password (generates new one).
 ## CompanyUser (object)
 - id: 1 (number)
 - status: 1 (number)
-- deletedAt (DateTimeObject)
+- deletedAt (DateTimeObjectNull)
 - userMap (User)
 - companyMap (Company)
 
@@ -673,7 +702,7 @@ Change another user password (generates new one).
 - name: `Homemade limo 0,5l` (string)
 - createdTime (DateTimeObject)
 - code (string)
-- deletedAt (DateTimeObject, nullable)
+- deletedAt (DateTimeObjectNull, nullable)
 - unit (Unit)
 
 ## Unit (object)
@@ -687,13 +716,13 @@ Change another user password (generates new one).
 - id: 1 (number)
 - name: `Package 1` (string)
 - quantity: 6 (number)
-- deletedAt (DateTimeObject, nullable)
+- deletedAt (DateTimeObjectNull, nullable)
 - item (Item)
 
 ## Recipe (object)
 - id: 1 (number)
 - name: `Recipe 1` (string)
-- deletedAt (DateTimeObject, nullable)
+- deletedAt (DateTimeObjectNull, nullable)
 - items (array[Item])
 - company (Company)
 
@@ -725,8 +754,8 @@ Change another user password (generates new one).
 ## Warehouse (object)
 - id: 1 (number)
 - name: `Central warehouse` (string, required)
-- description (string)
-- deletedAt (DateTimeObject, nullable)
+- description: `Warehouse description` (string)
+- deletedAt (DateTimeObjectNull, nullable)
 - packages (array[Package])
 - items (array[WarehouseItem])
 - branch (Branch)
@@ -734,9 +763,9 @@ Change another user password (generates new one).
 
 ## WarehouseItem (object)
 - id: 1 (number)
-- quantity (number)
-- quantityMinimal (number)
-- quantityOptimal (number)
+- quantity: 8 (number)
+- quantityMinimal: 10 (number)
+- quantityOptimal: 100 (number)
 - item (Item)
 
 ## WorldContinent (object)
