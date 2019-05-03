@@ -275,6 +275,15 @@ is created only for system purposes and does not depends on any company.
 
 ## Recipe Collection [/recipes]
 
+### List recipes [GET /recipes]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Recipe)
+
 ### Get recipe [GET /recipes/{id}]
 
 + Parameters
@@ -365,6 +374,26 @@ is created only for system purposes and does not depends on any company.
             - count: 1
         - data (ResponseBlank)
 
+## Supplier collection [/suppliers]
+**DEV**
+
+### List suppliers [GET /suppliers]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (Supplier)
+
+### Get supplier [GET /suppliers/{id}]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (Supplier)
+
 ## System [/system]
 
 ### Check network connection and API availability [GET /system/ping]
@@ -452,7 +481,7 @@ Change another user password (generates new one).
         - data (array)
             - (CompanyUser)
 
-### Change my user details [PUT /users/me]
+### Put my user details [PUT /users/me]
 
 + Request (application/json)
     + Attributes
@@ -465,7 +494,21 @@ Change another user password (generates new one).
         - meta (ResponseMeta)
             - count: 1
         - data (array)
-            - (User)
+            - (CompanyUser)
+            
+### Patch my user details [PATCH /users/me]
+**DEV**
+
++ Request (application/json)
+    + Attributes
+        - lang: `en` (string)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (CompanyUser)
 
 ### Invite user [POST /users/invite]
 
@@ -632,12 +675,9 @@ Change another user password (generates new one).
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 2
+            - count: 1
         - data (array)
             - (Warehouse)
-                - id: 1
-            - (Warehouse)
-                - id: 2
 
 # Data structures
 
@@ -731,6 +771,10 @@ Change another user password (generates new one).
 - quantity: 5 (number)
 - item: 2 (number)
 - recipe: 2 (number)
+
+## Supplier (object)
+- company (Company) - subscriber company
+- supplier (Company) - supplier company
 
 ## Transaction (object)
 - id: 1 (number)
