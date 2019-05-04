@@ -249,7 +249,7 @@ is created only for system purposes and does not depends on any company.
 ### Get package [GET /packages/{id}]
 
 + Parameters
-    - id (number) - Recipe ID
+    - id (number) - Package ID
 
 + Response 200 (application/json)
     + Attributes
@@ -281,8 +281,7 @@ is created only for system purposes and does not depends on any company.
     + Attributes
         - meta (ResponseMeta)
             - count: 1
-        - data (array)
-            - (Recipe)
+        - data (Recipe)
 
 ### Get recipe [GET /recipes/{id}]
 
@@ -295,11 +294,9 @@ is created only for system purposes and does not depends on any company.
             - count: 1
         - data (array)
             - (Recipe)
-                - items (array)
-                    - (Item)
-                        - id: 1
-                    - (Item)
-                        - id: 2
+  
+
+    
 
 ### Create recipe [POST /recipes]
 
@@ -347,7 +344,6 @@ is created only for system purposes and does not depends on any company.
 
 + Request (application/json)
     + Attributes
-        - warehouse: 5 (number)
         - action: `load` (string)
         - count: 10 (number)
 
@@ -364,7 +360,6 @@ is created only for system purposes and does not depends on any company.
 
 + Request (application/json)
     + Attributes
-        - warehouseFrom: 1 (number)
         - warehouseTo: 2 (number)
         - count: 10 (number)
 
@@ -763,14 +758,13 @@ Change another user password (generates new one).
 - id: 1 (number)
 - name: `Recipe 1` (string)
 - deletedAt (DateTimeObjectNull, nullable)
-- items (array[Item])
-- company (Company)
+- items (array[RecipeItem])
 
 ## RecipeItem (object)
 - id: 1 (number)
 - quantity: 5 (number)
-- item: 2 (number)
-- recipe: 2 (number)
+- item (Item)
+- warehouse (WarehouseBase)
 
 ## Supplier (object)
 - company (Company) - subscriber company
@@ -794,6 +788,12 @@ Change another user password (generates new one).
 - googleAuthEnabled: false (string)
 - role: `SUPERADMIN` (string)
 - regTime (DateTimeObject)
+
+## WarehouseBase (object)
+- id: 1 (number)
+- name: `Central warehouse` (string, required)
+- description: `Warehouse description` (string)
+- deletedAt (DateTimeObjectNull, nullable)
 
 ## Warehouse (object)
 - id: 1 (number)
