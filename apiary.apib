@@ -626,15 +626,12 @@ Change another user password (generates new one).
         - meta (ResponseMeta)
             - count: 1
         - data (array)
-            - (Warehouse)
-                - items (array)
-                    - (WarehouseItem)
-                        - item (Item)
+            - (WarehouseItem)
+                - item (Item)
 
-### Get warehouse item [GET /warehouses/{warehouse_id}/items/{item_id}]
+### Get warehouse item [GET /warehouses/items/{item_id}]
 
 + Parameters
-    - warehouse_id (number) - Warehouse ID
     - item_id (number) - Warehouse Item ID
 
 + Response 200 (application/json)
