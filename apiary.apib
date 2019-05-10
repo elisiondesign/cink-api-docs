@@ -603,6 +603,17 @@ Change another user password (generates new one).
         - data (array)
             - (Warehouse)
 
+## Warehouse Shopping list Collection [/warehouses/shopping-list]
+
+### List transactions [GET /warehouses/shopping-list]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (array)
+            - (WarehouseShoppingListItem)
+
 ## Warehouse Transaction Collection [/warehouses/transactions]
 
 ### List transactions [GET /warehouses/transactions]
@@ -764,6 +775,8 @@ Change another user password (generates new one).
 - warehouse (WarehouseBase)
 
 ## Supplier (object)
+- id: 1 (number)
+- note: `Our best food supplier` (string)
 - company (Company) - subscriber company
 - supplier (Company) - supplier company
 
@@ -808,6 +821,12 @@ Change another user password (generates new one).
 - quantityMinimal: 10 (number)
 - quantityOptimal: 100 (number)
 - item (Item)
+
+## WarehouseShoppingListItem (object)
+- id: 1 (number)
+- quantity: 10
+- item (Item)
+- warehouseItems (array[WarehouseItem])
 
 ## WorldContinent (object)
 - id: 1 (number)
