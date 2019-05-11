@@ -308,6 +308,17 @@ is created only for system purposes and does not depends on any company.
             - count: 1
         - data (Recipe)
 
+### Remove recipe [DELETE /recipes/{id}]
+
++ Parameters
+    - id (number) - Recipe ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (ResponseBlank)
+
 ### Add item to recipe [POST /recipes/item]
 
 + Request (application/json)
