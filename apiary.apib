@@ -32,12 +32,12 @@ HTTP status | Description
 ## Dictionary
 English | Czech | Description
 --- | --- | ---
-Branch | Pobočka | One company contains one or more branches.
+Branch | Pobočka | One company contains one or more BranchGetes.
 Company | Společnost | -
 Item | Položka | -
 Package | Balení | Pakcages contains multiple items with same item ID.
 Recipe | Receptura | Recipes consists of items.
-Warehouse | Sklad | -
+stock | Sklad | -
 
 ## Authentication [/]
 
@@ -72,7 +72,7 @@ Warehouse | Sklad | -
 
 + Request (application/json)
     + Headers
-
+    
             Authorization: Bearer pcMUl7e4aDw7-n2G53WFImw_1ruzmmapqgvWQNcr9JYtnnJlAL
 
 + Response 200 (application/json)
@@ -89,6 +89,20 @@ Warehouse | Sklad | -
 
 ## Branch Collection [/branches]
 
+### Create branch [POST /branches]
++ Request (application/json)
+    + Attributes (BranchDef)
+
++ Response 201 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+
 ### List all branches [GET /branches]
 
 + Response 200 (application/json)
@@ -96,63 +110,106 @@ Warehouse | Sklad | -
         - meta (ResponseMeta)
             - count: 1
         - data (array)
-            - (Branch)
+            - (object)
+              - branch (BranchGet)
+                  - stocks (array)
+                        - (object)
+                            - id: 1
+                        - (object)
+                            - id: 2
+            + (object)
+              + branch (BranchGet)
+                    - id: 2
+                    - name: `Other branch`
+                    - stocks (array)
+                        - (object)
+                            - id: 1
 
-### Get branch [GET /branches/{id}]
+### Get branch [GET /branches/{branchId}]
 
 + Parameters
-    - id (number) - Branch ID
+    - branchId (number) - Branch ID
 
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
             - count: 1
         - data (array)
-            - (Branch)
+            - (object)
+              - branch (BranchGet)
+                      - stocks (array)
+                        - (object)
+                            - id: 1
+             
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
-### Put branch [PUT /branches/{id}]
-
-+ Parameters
-    - id (number) - Branch ID
-
+### Update branch [PUT /branches/{branchId}]
 + Request (application/json)
-    + Attributes (Branch)
+    + Attributes (BranchDef)
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (array)
-            - (Branch)
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+    
+### Delete branch [DELETE /branches/{branchId}]
++ Parameters
+    - branchId (number) - Branch ID
 
-### List associated warehouses [GET /branches/{id}/warehouses]
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+
+### List associated stocks [GET /branches/{branchId}/stocks]
 
 + Parameters
-    - id (number) - Branch ID
+    - branchId (number) - Branch ID
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
+        - meta (array)
         - data (array)
-            - (Branch)
-                - warehouses (array)
-                    - (Warehouse)
+            - (object)
+              - stock (StockGet)
+                    + stockValue: 100
+          - (object)
+              + stock (StockGet)
+                    + id: 2
+                    + stockValue: null - Purchase price (excl. VAT) of items within stock. If zero then the value is null.
+              
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
 ## Cash desk [/cash-desk]
 Cash system related endpoints.
 
 ### Synchronize [POST /cash-desk/synchronize]
-**DEV**
-
-Map all new items from cash system to warehouse system.
+Map all new items from cash system to stock system.
 
 + Response 200 (application/json)
-    + Attributes (ResponseBlank)
+    + Attributes
+        - meta (array)
+            - (object)
+                - newlySyncedItems: 20
+        - data (ResponseSuccess)
 
-### Uload sold item [POST /cash-desk/unload-sold]
-**DEV**
-
+### Unload sold item [POST /cash-desk/unload-sold]
 This endpoint is called by AWS Lambda (via AWS SQS) from hook started by cash system when
 active account was closed (immidiately after customer payment).
 
@@ -164,87 +221,210 @@ is created only for system purposes and does not depends on any company.
         - bill: 2031921 (number)
 
 + Response 200 (application/json)
-    + Attributes (ResponseBlank)
-            
-+ Response 404 
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - error (ResponseError)
+        - meta (array)
+        - data (ResponseSuccess)
+            
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
             - message: `Sale item was not found`
+            
+### List all mapped recipes [GET /cash-desk/recipes?limit={limit}&page={page}]
+Get all category Items that were also mapped to stock recipes. If a category item (item from cash system) is mapped in stock, it is always mapped to recipe.
+
+
++ Parameters
+    - limit (number, optional, `10`) - Pagination limit
+    - page (number, optional, `1`) - Pagination offset
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+                  - categoryItemToStockRecipe (categoryItemToStockRecipeGet)
+                  - categoryItem (CategoryItemGet)
+                  - recipe (RecipeGet)
+            - (object)
+                  - categoryItemToStockRecipe (categoryItemToStockRecipeGet)
+                      - id: 2
+                  - categoryItem (CategoryItemGet)
+                      - id: 2
+                  - recipe (RecipeGet)
+                      - id: 2 
 
 ## Company Collection [/companies]
 
-### Get company details [GET /companies/{id}]
+### Get company details [GET /companies/{companyId}]
 
 + Parameters
-    - id (number) - Company ID
+    - companyId (number) - Company ID
 
 + Response 200 (application/json)
-    - Attributes
+    + Attributes
         - meta (ResponseMeta)
             - count: 1
         - data (array)
-            - (Company)
+            - (object)
+              - branch (CompanyGet)
+             
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
 ### Create company [POST /companies]
 
 + Request (application/json)
-    + Attributes
-        - name: `Coca Cola ltd.` (string)
-        - registrationNumber: `123456789` (string)
-        - vatNumber:  `CZ123456789` (string)
-        - city: `Brno` (string)
-        - postalCode: `663 00` (string)
-        - street: `Kounicova` (string)
-        - country: 250 (number)
+    + Attributes (CompanyDef)
 
 + Response 201 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (array)
-            - (Company)
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+### Update company [PUT /companies/{companyId}]
++ Request (application/json)
+    + Attributes (CompanyDef)
 
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+### Update company settings [PUT /companies/settings]
++ Request (application/json)
+    + Attributes (CompanySettingsDef)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
+### Get company settings [GET /companies/settings]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+              - settings (CompanySettingsGet)
+              - stock (StockGet)
+             
 ### Get users [GET /companies/users]
 
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 2
+            - count: 1
         - data (array)
-            - (CompanyUser)
-                - id: 1
-            - (CompanyUser)
-                - id: 2
+            - (object)
+              - user (UserGet)
+            - (object)
+              - user (UserGet)
+                  - id: 2
+                  - fullName: `Some name`
+                  - username: `username`
 
-## Item Collection [/items]
+## Stock cards Collection [/stock-cards]
 
-### List items [GET /items]
+### List stock cards [GET /stock-cards]
 
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
             - count: 1
         - data (array)
-            - (Item)
+            - (object)
+              - stockCard (StockCardGet)
+              - unit (UnitGet)
+            - (object)
+              - stockCard (StockCardGet)
+                    - id: 2
+                    - name: `Juice`
+              - unit (UnitGet)
+              
+### Get  stock card detail [GET /stock-cards/{stockCardId}]
 
-### Create item [POST /items]
++ Parameters
+    - stockCardId (number) - Stock card ID
 
-+ Request (application/json)
-    + Attributes
-        - name: `Coca-Cola` (string)
-        - unit: 2 (number)
-        - code: `cc` (string)
-
-+ Response 201 (application/json)
++ Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
             - count: 1
         - data (array)
-            - (Item)
+            - (object)
+              - stockCard (StockCardGet)
+              - unit (UnitGet)
+             
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+
+### Create stock card [POST /stock-cards]
+
++ Request (application/json)
+    + Attributes (StockCardDef)
+
++ Response 201 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+### Update stock card [PUT /stock-cards/{stockCardId}]
++ Parameters
+    - stockCardId (number) - Stock card ID
+
++ Request (application/json)
+    + Attributes (StockCardDef)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+### Delete stock card [DELETE /stock-cards/{stockCardId}]
++ Parameters
+    - stockCardId (number) - Stock card ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
 ## Package Collection [/packages]
+**DEV**
+
+Exists, but not loading and unloading not supported. Therefore not usable now.
 
 ### Get package [GET /packages/{id}]
 
@@ -279,104 +459,178 @@ is created only for system purposes and does not depends on any company.
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
+        - meta (array)
         - data (array)
-            - (Recipe)
+            - (object)
+              - recipe (RecipeGet)
+              - stockCards (array)
+                    - (object)
+                        - id: 1
+                    - (object)
+                        - id: 2
+              - sourceRecipe (array)
+                    - (object)
+                        - id: 1
+            - (object)
+              - recipeStockCards (array)
+                    - (RecipeStockCardGet)
+                    - (RecipeStockCardGet)
+                         - id: 2
+                         - stockCard: 10
+            - (object)
+              - sourceRecipe (array)
+                    - (SourceRecipeGet)
+            - (object)
+              - recipe (RecipeGet)
+                     - id: 2
+                     - name: `Other recipe`
+              - stockCards (array)
+                    - (object)
+                        - id: 1
+                    - (object)
+                        - id: 2
+              - sourceRecipe (array)
+                    - (object)
+                        - id: 1
+            - (object)
+              - recipeStockCards (array)
+                    - (RecipeStockCardGet)
+                    - (RecipeStockCardGet)
+                         - id: 2
+                         - stockCard: 10
+            - (object)
+              - sourceRecipe (array)
+                    - (SourceRecipeGet)
 
-### Get recipe [GET /recipes/{id}]
+### Get recipe [GET /recipes/{recipeId}]
 
 + Parameters
-    - id (number) - Recipe ID
+    - recipeId (number) - Recipe ID
 
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
             - count: 1
         - data (array)
-            - (Recipe)
+            - (object)
+              - recipe (RecipeGet)
+              - stockCards (array)
+                    - (object)
+                        - id: 1
+                    - (object)
+                        - id: 2
+              - sourceRecipe (array)
+                    - (object)
+                        - id: 1
+            - (object)
+              - recipeStockCards (array)
+                    - (RecipeStockCardGet)
+                    - (RecipeStockCardGet)
+                         - id: 2
+                         - stockCard: 10
+            - (object)
+              - sourceRecipe (array)
+                    - (SourceRecipeGet)
+             
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
 ### Create recipe [POST /recipes]
 
 + Request (application/json)
-    + Attributes
-        - name: "Steak with chips" (string)
+    + Attributes (RecipeDef)
 
 + Response 201 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (Recipe)
-
-### Remove recipe [DELETE /recipes/{id}]
-
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+### Update recipe [PUT /recipes/{recipeId}]
 + Parameters
-    - id (number) - Recipe ID
+    - recipeId (number) - Recipe ID
+
++ Request (application/json)
+    + Attributes (RecipeDef)
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (ResponseBlank)
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
-### Add item to recipe [POST /recipes/item]
+
+### Remove recipe [DELETE /recipes/{recipeId}]
+
++ Parameters
+    - recipeId (number) - Recipe ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+
+### Populate recipe [POST /recipes/{recipeId}/add]
+
++ Parameters
+    - recipeId (number) - Recipe ID
 
 + Request (application/json)
     + Attributes
-        - item: 2 (number)
-        - recipe: 2 (number)
-        - quantity: 5 (number)
-
+        - recipes (array)
+            - (object)
+                - id: 1 (number)
+                - quantity: 1 (number)
+        - stockCards (array)
+            - (object)
+                - id: 2 (number)
+                - quantity: 6 (number)
+            - (object)
+                - id: 4 (number)
+                - quantity: 4 (number)
+                
 + Response 201 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (RecipeItem)
-
-### Remove item from recipe [DELETE /recipes/item]
-
-+ Request (application/json)
-    + Attributes
-        - item: 2 (number)
-        - recipe: 2 (number)
-
-+ Response 200 (application/json)
-    + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (ResponseBlank)
-
-### Load recipe [PATCH /recipes/{id}/move]
+        - meta (array)
+            - `stockCard 2`: `Was not found`
+        - data (ResponseSuccess)
+                
+### Remove from recipe [POST /recipes/{recipeId}/remove]
 
 + Parameters
-    + id (number) - Recipe ID
+    - recipeId (number) - Recipe ID
 
 + Request (application/json)
     + Attributes
-        - action: `load` (string)
-        - count: 10 (number)
-
-+ Response 200 (application/json)
+        - recipes (array)
+            - (object)
+                - id: 1 (number)
+        - stockCards (array)
+            - (object)
+                - id: 2 (number)
+            - (object)
+                - id: 4 (number)
+                
++ Response 201 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (ResponseBlank)
-
-### Transfer recipe [PATCH /recipes/{id}/transfer]
-
-+ Parameters
-    - id (number) - Recipe ID
-
-+ Request (application/json)
-    + Attributes
-        - warehouseTo: 2 (number)
-        - count: 10 (number)
-
-+ Response 200 (application/json)
-    + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (ResponseBlank)
+        - meta (array)
+            - stockCard 2: `Was not found`
+        - data (ResponseSuccess)
 
 ## Supplier collection [/suppliers]
 **DEV**
@@ -396,7 +650,48 @@ is created only for system purposes and does not depends on any company.
     + Attributes
         - meta (ResponseMeta)
             - count: 1
-        - data (Supplier)
+        - data (array)
+            - (Supplier)
+
+### Remove supplier [DELETE /suppliers/{id}]
+
++ Parameters
+    - id (number) - Supplier ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
+        - data (ResponseBlank)
+        
+## Measurement Units Collection [/units]
+### List units [GET /units]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+              - unit (UnitGet)
+              - basicUnit (BasicUnitGet)
+              
+### Get unit detail [GET /units/{unitId}]
+
++ Parameters
+    - unitId (number) - Unit ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+              - unit (UnitGet)
+              - basicUnit (BasicUnitGet)
+             
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
 ## System [/system]
 
@@ -436,32 +731,39 @@ is created only for system purposes and does not depends on any company.
 
 ## User Collection [/users]
 
-### Get user [GET /users/{id}]
+### Get user [GET /users/{userId}]
 
 + Parameters
-    - id (number) - User ID
+    - userId (number) - User ID
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
+        - meta (array)
         - data (array)
-            - (User)
+            - (object)
+              - user (UserGet)
 
 ### Set user status [PUT /users/{id}/status]
+**DEV**
+
+Works, but has no effect yet.
 
 + Parameters
     - id (number) - User ID
 
 + Request (application/json)
     + Attributes
-        - status: `active` (string)
+        - status: `active` (string) - options are `active` and `inactive`
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (CompanyUser)
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
 ### Change user password [POST /users/{id}/change-password]
 Change another user password (generates new one).
@@ -480,40 +782,22 @@ Change another user password (generates new one).
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
+        - meta (array)
         - data (array)
-            - (CompanyUser)
+            - (object)
+                - user (UserGet)
+                - company (CompanyGet)
 
 ### Put my user details [PUT /users/me]
 
 + Request (application/json)
-    + Attributes
-        - fullName: `User 1` (string)
-        - email: `user@example.com` (string)
-        - phone: `+420 000 000 000` (string)
+    + Attributes (UserDef)
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (array)
-            - (CompanyUser)
+        - meta (array)
+        - data (ResponseSuccess)
             
-### Patch my user details [PATCH /users/me]
-**DEV**
-
-+ Request (application/json)
-    + Attributes
-        - lang: `en` (string)
-
-+ Response 200 (application/json)
-    + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (array)
-            - (CompanyUser)
-
 ### Invite user [POST /users/invite]
 
 + Request (application/json)
@@ -573,160 +857,543 @@ Change another user password (generates new one).
             - user (object)
                 - id: 2 (number)
 
-## Warehouse Collection [/warehouses]
+## Stock Collection [/stocks]
 
-### List warehouses [GET /warehouses]
+### List stocks [GET /stocks]
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
+        - meta (array)
         - data (array)
-            - (Warehouse)
+            - (object)
+                - stock (StockGet)
+                    - branch: 1 (number)
+                    - stockValue: 5
+                - branch (BranchGet)
+                
 
-### Get warehouse [GET /warehouses/{id}]
+### Get stock [GET /stocks/{id}]
 
 + Parameters
-    - id (number) - Warehouse ID
+    - id (number) - stock ID
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
+        - meta (array)
         - data (array)
-            - (Warehouse)
+            - (object)
+                - stock (StockGet)
+                    - branch: 1 (number)
+                    - recipes (array)
+                        - (object)
+                            - id: 1
+                    - stockValue: 5
+                - branch (BranchGet)
 
-### Create new warehouse [POST /warehouses]
+### Create stock [POST /stocks]
 
 + Request (application/json)
+    + Attributes (StockDef)
+
++ Response 201 (application/json)
     + Attributes
-        - name: `Central warehouse` (string)
-        - description: `Test description` (string)
-        - branch (object)
-            - id: 863 (number)    
-
-+ Response 200 (application/json)
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (array)
-            - (Warehouse)
-
-## Warehouse Shopping list Collection [/warehouses/shopping-list]
-
-### List transactions [GET /warehouses/shopping-list]
-
-+ Response 200 (application/json)
-    + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (array)
-            - (WarehouseShoppingListItem)
-
-## Warehouse Transaction Collection [/warehouses/transactions]
-
-### List transactions [GET /warehouses/transactions]
-
-+ Response 200 (application/json)
-    + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (array)
-            - (Transaction)
-
-## Warehouse Item Collection [/warehouses/{warehouse_id}/items]
-
-### List warehouse items [GET /warehouses/{warehouse_id}/items]
-
+        - meta (array)
+        - error (ResponseNotFound)
+        
+### Update stock [PUT /stocks/{stockId}]
 + Parameters
-    - warehouse_id (number) - Warehouse ID
-
-+ Response 200 (application/json)
-    + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (array)
-            - (WarehouseItem)
-                - item (Item)
-
-### Get warehouse item [GET /warehouses/items/{item_id}]
-
-+ Parameters
-    - item_id (number) - Warehouse Item ID
-
-+ Response 200 (application/json)
-    + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (array)
-            - (WarehouseItem)
-                - item (Item)
-
-### Put warehouse item [PUT /warehouses/{warehouse_id}/items/{item_id}]
-
-+ Parameters
-    - warehouse_id (number) - Warehouse ID
-    - item_id (number) - Warehouse Item ID
+    - stockId (number) - Stock ID
 
 + Request (application/json)
-    + Attributes (WarehouseItem)
+    + Attributes (StockDef)
 
 + Response 200 (application/json)
     + Attributes
-        - meta (ResponseMeta)
-            - count: 1
-        - data (WarehouseItem)
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
-## Warehouse Package Collection [/warehouses/{id}/packages]
 
-### List warehouse packages [GET /warehouses/{id}/packages]
+### Remove stock [DELETE /stocks/{stockId}]
 
 + Parameters
-    - id (number) - Warehouse ID
+    - stockId (number) - Stock ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+
+## stock Shopping list Collection [/stocks/shopping-list]
+**DEV**
+
+### List transactions [GET /stocks/shopping-list]
 
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
             - count: 1
         - data (array)
-            - (Warehouse)
+            - (stockShoppingListItem)
+
+## Stock Transaction Collection [/stocks/transactions]
+
+### Types
+
+Load
+
+- Loads and item with a purchase price (not a virtual load without actual physical item load)
+
+Virtual load
+
+- Loads item without actually loading the item
+
+Unload
+
+- Unload item and the quantity in stock suffices
+- Not going into negative numbers
+- It can happen that unload operation leads to two transactions
+    - partially for classical unload while resources suffice
+    - the remainder is  registered as a unload to negative
+
+Unload to negative
+
+- If there is not enough resources in stock
+
+### List transactions [GET /stocks/transactions?limit={limit}&page={page}]
+Returns info about historical transactions that includes
+- unload operations
+- load non-virtual operations
+
+Does not include
+- load virtual operations
+- transaction cancels
+
++ Parameters
+    - limit (number, optional, `10`) - Pagination limit
+    - page (number, optional, `1`) - Pagination offset
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+                - transaction (TransactionGet)
+                - stockItem (StockItemGet)
+                
+### Cancel transaction [PATCH /transactions/{transactionId}/cancel]
+
+Reverts transaction
+- for unload, it loads back the item at purchase price
+- for load, it sets quantity to zero and removes it from stock
+    - however, the item still exists due to FK constraint
+    
+### Effect on each type
+Load
+- reverts quantity in stock and the actual quantity of given item
+- has effect on overall stock value
+
+Virtual load
+- reverts only the quantity registered in stock
+- has no effect on stock value
+
+Unload
+- Basically loads the item back (reverts unload)
+- has effect on overall stock value
+
+Unload to negative
+- inceases quantity in stock
+- But has no effect on stock value
+        
++ Parameters
+    - transactionId (number) - Transaction ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseNotFound)
+
+## Stock Stock cards Collection [/stocks/{stockId}/stock-cards]
+
+### List stock cards in stock [GET /stocks/{stockId}/stock-cards]
+
++ Parameters
+    - stockId (number) - stock ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+                - stockStockCard (StockStockCardGet)
+                - stockCard (StockCardGet)
+                - unit (UnitGet)
+                - vatRate (VatRateGet)
+                
+### List stock cards in all stocks [GET /stocks/stock-cards]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+                - stockStockCard (StockStockCardGet)
+                - stockCard (StockCardGet)
+                - unit (UnitGet)
+                - vatRate (VatRateGet)
+                
+### Associate stock card with stock [PUT /stocks/{stockId}/stock-cards/{stockCardId}]
++ Parameters
+    - stockId (number) - Stock ID
+    - stockCardId (number) - Stock card ID
+
++ Request (application/json)
+    + Attributes (object)
+        - quantitityMinimal: 100 (number)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+        
+### Load stock card [PATCH /stocks/{stockId}/stock-cards/{stockCardId}/load]
+**Virtual** 
+- pokud true, nedochází k naskladňování fyzické skladové položky. Dochází pouze ke zvýšení množství na StockStockCard (množství dané karty na daném skladě)
+- Vhodné po narovnání rozdílu mezi quantity evidované a quantity skutečné. K rozdílu dojde, pokud vyskladnění dojde do záporných hodnot
+- Virtual naskladnění není evidováno v transakcích a není proto stornovatelné 
+- Také neovlivňuje hodnotu skladu, protože se nejedná o skutečné položky
+
++ Parameters
+    - stockId (number) - Stock ID
+    - stockCardId (number) - Stock card ID
+
++ Request (application/json)
+    + Attributes (object)
+        - quantity: 100 (number)
+        - virtual: true (boolean)
+        - purchase_price: 5 (number)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+        
+### Unload stock card [PATCH /stocks/{stockId}/stock-cards/{stockCardId}/unload]
+FIFO method
+
++ Parameters
+    - stockId (number) - Stock ID
+    - stockCardId (number) - Stock card ID
+
++ Request (application/json)
+    + Attributes (object)
+        - quantity: 100 (number)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+### Transfer stock card between stocks [PATCH /stocks/{stockId}/stock-cards/{stockCardId}/transfer]
+
++ Parameters
+    - stockId (number) - Stock ID
+    - stockCardId (number) - Stock card ID
+
++ Request (application/json)
+    + Attributes (object)
+        - stockTo: 2 (number)
+        - quantity: 100 (number)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+            - (object)
+                - `Not enough resources in stock`: `Resulting in negative stock resources`
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+## Stock Recipes Collection [/stocks/{stockId}/recipes]
+
+### Add recipe to stock [POST /stocks/{stockId}/recipes/{recipeId}/add]
+
++ Parameters
+    - stockId (number) - Stock ID
+    - recipeId (number) - Recipe ID
+
++ Response 201 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+                
+### Remove from recipe  [POST /stocks/{stockId}/recipes/{recipeId}/remove]
+
++ Parameters
+    - stockId (number) - Stock ID
+    - recipeId (number) - Recipe ID
+
++ Response 201 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+
+### Unload recipe [PATCH /stocks/{stockId}/recipes/{recipeId}/unload]
+
++ Parameters
+    - stockId (number) - Stock ID
+    - recipeId (number) - Recipe ID
+
++ Request (application/json)
+    + Attributes (object)
+        - count: 4 (number)
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseSuccess)
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+
+
+## stock Package Collection [/stocks/{id}/packages]
+**DEV**
+
+### List stock packages [GET /stocks/{id}/packages]
+**DEV**
+
++ Parameters
+    - id (number) - stock ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1
 
 # Data structures
-
 ## ResponseMeta (object)
 - count: 0 (number)
 
 ## ResponseError (object)
 - message: `Example error` (string)
 
+## ResponseNotFound (object)
+- message: `Entity *ENTITY NAME* was not found` (string)
+
+## ResponseSuccess (object)
+- success: `true` (boolean)
+
 ## ResponseBlank (object)
 - meta (ResponseMeta)
     - count: 1
 - data (array)
 
+## categoryItemToStockRecipeGet (object)
+- id: `1` (number)
+- shouldMapInStock: `true` (boolean) - Whether the cash item should be mapped to any stock recipe
+- categoryItem: 11
+- recipe: 20
+
+## CategoryItemGet (object)
+- id: 11,
+- itemTitleLong: `CategoryItem - Mrkvový džus 0,3l` (string)
+- itemTitleShort: null
+- ean: null
+- plu: null
+- quantityUnit: null
+- priceExcVat: null
+- vatRate: null
+- priceIncVat: null
+
+## RecipeGet (object)
+- id: `1` (number)
+- Include RecipeDef
+
+## RecipeDef (object)
+- name: `Some recipe` (string)
+
+## BranchGet (object)
+- id: `1` (number)
+- Include BranchDef
+- logo (string, nullable)
+
+        
+## BranchDef (object)
+- name: `Extra Branch` (string, required)
+- addressStreet: `Street` (string, required)
+- addressCity: `City` (string, required)
+- addressPostalCode: `12456` (string, required)
+- addressCountry: 1 (number, required)
+
+
+## CompanyGet (object)
+- id: `1` (number)
+- Include CompanyDef
+- creationTime: `2019-06-13 01:06:36` (string)
+- businessType: false (boolean)
+- affiliate: 1 (number, optional, nullable)
+- syncAres: 1 (number)
+
+## CompanyDef (object)
+- name: `Coca Cola ltd.` (string, required)
+- registrationNumber: 123456789 (number, required)
+- vatNumber:  `CZ123456789` (string, required)
+- city: `Brno` (string, required)
+- postalCode: `663 00` (string, required)
+- street: `Kounicova` (string, required)
+- country: 250 (number, required)
+
+## UserGet (object)
+- id: `1` (number)
+- Include UserDef
+- role: `SUPERADMIN`,
+- regTime: `2019-06-13 01:06:36`,
+- lang: null,
+- googleAuthEnabled: false,
+- username: `cink@cinkeet.cz`
+
+## UserDef (object)
+- fullName: `Name` (string, required)
+- email: `cink@cinkeet.cz` (string, required)
+- phone:  `505 666 777` (string, optional)
+- lang:  1 (number, optional)
+
+## StockCardDef (object)
+- name: `Stock card name` (string, required)
+- unit: 2 (number, required)
+
+## StockCardGet (object)
+- id: 1 (number)
+- Include StockCardDef
+- code: null (string, optional)
+
+## StockStockCardGet (object)
+- quantity: `17.0000` (string)
+- quantityMinimal: `3.0000` (string)
+- quantityOptimal: null
+- stockCard: 1 (number)
+- stockCardQuantity: `662.0000` (string)
+
+## VatRateGet (object)
+- id: 1 (number)
+- vatRate: `0.15` (string)
+
+## UnitGet (object)
+- id: 1 (number)
+- name: `Kilogram` (string)
+- abbreviation: `kg` (string)
+- allowDecimal: true (boolean)
+- code: null (string, optional)
+- basicUnit: 1 (number)
+
+## BasicUnitGet (object)
+- id: 1 (number)
+- name: `gram` (string)
+- abbreviation: `g` (string)
+
+## CompanySettingsGet (object)
+- id: `1` (number)
+- Include CompanySettingsDef
+
+## CompanySettingsDef (object)
+- defaultStock: 6 (number, required)
+
+## TransactionGet (object)
+- id: 27 (number)
+- quantity: `662.0000` (string)
+- createdTime: `2019-06-13 06:06:03`(string)
+- action: `unload` (string)
+- isCanceled": false (boolean)
+- stockItem: 1906 (number)
+- user: 1 (number)
+- stock": 1 (number)
+
+## StockItemGet (object)
+- id: 1906 (number)
+- dateReceived: `2019-06-13 12:06:00` (string)
+- dateUnloaded: `2019-06-16 15:16:23` (string)
+- purchasePrice: 5 (number)
+- priceCurrency: `CZK` (string)
+- quantity: `662.0000` (string)
+
+## RecipeStockCardGet (object)
+- id: `1` (number)
+- quantity: 8 (number) - how many times stock card is included in recipe
+- stockCard: 13 (number)
+
+## SourceRecipeGet
+- id: `1` (number)
+- quantity: 8 (number) - how many times some recipe is included in recipe
+- containsRecipe: 13 (number)
+
+## StockGet (object)
+- id: 1 (number)
+- Include StockDef
+
+## StockDef (object)
+- name: `Central stock` (string, required)
+- description: `stock description` (string)
+- branch: 863 (number)
+
+
+ 
+# `Outdated data structures (such as item or user)`
 ## DateTimeObject (object)
 - date: `2019-04-27 16:29:18.000000` (string)
 - timezone_type: `3` (number)
 - timezone: `Europe/Prague` (string)
-
-## DateTimeObjectNull (object)
-- date (string, nullable)
-- timezone_type (number, nullable)
-- timezone (string, nullable)
-
-## Branch (object)
-- id: `1` (number)
-- createTime (DateTimeObject)
-- updateTime (DateTimeObject)
-- status: true (boolean)
-- name: `Extra branch` (string)
-- addressStreet
-- addressCity
-- addressPostalCode
-- logo (string, nullable)
-- warehouses (array)
-    - (Warehouse)
-        - items: null
 
 ## Company (object)
 - id: `1` (number)
@@ -742,19 +1409,30 @@ Change another user password (generates new one).
 - affiliate (number)
 - syncAres: `1` (string)
 
-## CompanyUser (object)
+## Package (object)
 - id: 1 (number)
-- status: 1 (number)
-- deletedAt (DateTimeObjectNull)
-- userMap (User)
-- companyMap (Company)
+- name: `Package 1` (string)
+- quantity: 6 (number)
+- item (Item)
+
+## Supplier (object)
+- id: 1 (number)
+- note: `Our best food supplier` (string)
+- company (Company) - subscriber company
+- supplier (Company) - supplier company
+
+## stockItem (object)
+- id: 1 (number)
+- quantity: 8 (number)
+- quantityMinimal: 10 (number)
+- quantityOptimal: 100 (number)
+- item (Item)
 
 ## Item (object)
 - id: 1 (number)
 - name: `Homemade limo 0,5l` (string)
 - createdTime (DateTimeObject)
 - code (string)
-- deletedAt (DateTimeObjectNull, nullable)
 - unit (Unit)
 
 ## Unit (object)
@@ -764,78 +1442,11 @@ Change another user password (generates new one).
 - allowDecimal: true (boolean)
 - ratio: 100 (number)
 
-## Package (object)
-- id: 1 (number)
-- name: `Package 1` (string)
-- quantity: 6 (number)
-- deletedAt (DateTimeObjectNull, nullable)
-- item (Item)
-
-## Recipe (object)
-- id: 1 (number)
-- name: `Recipe 1` (string)
-- deletedAt (DateTimeObjectNull, nullable)
-- items (array[RecipeItem])
-
-## RecipeItem (object)
-- id: 1 (number)
-- quantity: 5 (number)
-- item (Item)
-- warehouse (WarehouseBase)
-
-## Supplier (object)
-- id: 1 (number)
-- note: `Our best food supplier` (string)
-- company (Company) - subscriber company
-- supplier (Company) - supplier company
-
-## Transaction (object)
-- id: 1 (number)
-- quantityChange: 4.0000 (number)
-- createdTime (DateTimeObject, nullable)
-- action: `load` (string)
-- warehouse (Warehouse)
-
-## User (object)
-- id: 1 (number)
-- fullName: `User 1` (string)
-- username: `user@example.com` (string)
-- email: `user@example.com` (string)
-- phone: `+420 000 000 000` (string, nullable)
-- lang: `cs` (string)
-- googleAuthSecret: null (string)
-- googleAuthEnabled: false (string)
-- role: `SUPERADMIN` (string)
-- regTime (DateTimeObject)
-
-## WarehouseBase (object)
-- id: 1 (number)
-- name: `Central warehouse` (string, required)
-- description: `Warehouse description` (string)
-- deletedAt (DateTimeObjectNull, nullable)
-
-## Warehouse (object)
-- id: 1 (number)
-- name: `Central warehouse` (string, required)
-- description: `Warehouse description` (string)
-- deletedAt (DateTimeObjectNull, nullable)
-- packages (array[Package])
-- items (array[WarehouseItem])
-- branch (Branch)
-- company (Company)
-
-## WarehouseItem (object)
-- id: 1 (number)
-- quantity: 8 (number)
-- quantityMinimal: 10 (number)
-- quantityOptimal: 100 (number)
-- item (Item)
-
-## WarehouseShoppingListItem (object)
+## stockShoppingListItem (object)
 - id: 1 (number)
 - quantity: 10
 - item (Item)
-- warehouseItems (array[WarehouseItem])
+- stockItems (array[stockItem])
 
 ## WorldContinent (object)
 - id: 1 (number)
