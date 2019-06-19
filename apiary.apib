@@ -514,7 +514,7 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
         - data (array)
             - (object)
               - recipe (RecipeGet)
-              - stockCards (array)
+              - recipeStockCards (array)
                     - (object)
                         - id: 1
                     - (object)
@@ -526,11 +526,21 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
               - recipeStockCards (array)
                     - (RecipeStockCardGet)
                     - (RecipeStockCardGet)
-                         - id: 2
-                         - stockCard: 10
+                         - id: 2 (number)
+                         - stockCard: 10 (number)
+            - (object)
+              - stockCards (array)
+                    - (StockCardGet)
+                        - id: 13 (number)
+                    - (StockCardGet)
+                        - id: 10 (number)
             - (object)
               - sourceRecipe (array)
                     - (SourceRecipeGet)
+            - (object)
+              - containsRecipes (array)
+                    - (RecipeGet)
+                        - id: 13 (number)
              
 + Response 404 (application/json)
     + Attributes
