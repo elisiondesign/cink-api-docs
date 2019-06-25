@@ -108,22 +108,22 @@ Stock | Sklad | -
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (array)
             - (object)
               - branch (BranchGet)
                   - stocks (array)
                         - (object)
-                            - id: 1
+                            - id: 1 (number)
                         - (object)
-                            - id: 2
+                            - id: 2 (number)
             + (object)
               + branch (BranchGet)
-                    - id: 2
+                    - id: 2 (number)
                     - name: `Other branch`
                     - stocks (array)
                         - (object)
-                            - id: 1
+                            - id: 1 (number)
 
 ### Get branch [GET /branches/{branchId}]
 
@@ -133,13 +133,13 @@ Stock | Sklad | -
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (array)
             - (object)
               - branch (BranchGet)
                       - stocks (array)
                         - (object)
-                            - id: 1
+                            - id: 1 (number)
              
 + Response 404 (application/json)
     + Attributes
@@ -188,7 +188,7 @@ Stock | Sklad | -
                     + stockValue: 100
           - (object)
               + stock (StockGet)
-                    + id: 2
+                    + id: 2 (number)
                     + stockValue: null - Purchase price (excl. VAT) of items within stock. If zero then the value is null.
               
 + Response 404 (application/json)
@@ -241,7 +241,8 @@ Get all category Items that were also mapped to stock recipes. If a category ite
 
 + Response 200 (application/json)
     + Attributes
-        - meta (array)
+        - meta (ResponseMeta)
+            - count: 13
         - data (array)
             - (object)
                   - categoryItemToStockRecipe (categoryItemToStockRecipeGet)
@@ -249,11 +250,11 @@ Get all category Items that were also mapped to stock recipes. If a category ite
                   - recipe (RecipeGet)
             - (object)
                   - categoryItemToStockRecipe (categoryItemToStockRecipeGet)
-                      - id: 2
+                      - id: 2 (number)
                   - categoryItem (CategoryItemGet)
-                      - id: 2
+                      - id: 2 (number)
                   - recipe (RecipeGet)
-                      - id: 2 
+                      - id: 2  (number)
 
 ## Company Collection [/companies]
 
@@ -265,7 +266,7 @@ Get all category Items that were also mapped to stock recipes. If a category ite
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (array)
             - (object)
               - branch (CompanyGet)
@@ -334,7 +335,7 @@ Get all category Items that were also mapped to stock recipes. If a category ite
               - user (UserGet)
             - (object)
               - user (UserGet)
-                  - id: 2
+                  - id: 2 (number)
                   - fullName: `Some name`
                   - username: `username`
 
@@ -345,18 +346,20 @@ Get all category Items that were also mapped to stock recipes. If a category ite
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (array)
             - (object)
               - stockCard (StockCardGet)
               - unit (UnitGet)
+              - category (CategoryGet)
             - (object)
               - stockCard (StockCardGet)
-                    - id: 2
+                    - id: 2 (number)
                     - name: `Juice`
               - unit (UnitGet)
+              - category (CategoryGet)
               
-### Get  stock card detail [GET /stock-cards/{stockCardId}]
+### Get stock card detail [GET /stock-cards/{stockCardId}]
 
 + Parameters
     - stockCardId (number) - Stock card ID
@@ -369,6 +372,7 @@ Get all category Items that were also mapped to stock recipes. If a category ite
             - (object)
               - stockCard (StockCardGet)
               - unit (UnitGet)
+              - category (CategoryGet)
              
 + Response 404 (application/json)
     + Attributes
@@ -449,7 +453,7 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
 + Response 201 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (array)
             - (Package)
 
@@ -465,39 +469,39 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
               - recipe (RecipeGet)
               - stockCards (array)
                     - (object)
-                        - id: 1
+                        - id: 1 (number)
                     - (object)
-                        - id: 2
+                        - id: 2 (number)
               - sourceRecipe (array)
                     - (object)
-                        - id: 1
+                        - id: 1 (number)
             - (object)
               - recipeStockCards (array)
                     - (RecipeStockCardGet)
                     - (RecipeStockCardGet)
-                         - id: 2
-                         - stockCard: 10
+                         - id: 2 (number)
+                         - stockCard: 10 (number)
             - (object)
               - sourceRecipe (array)
                     - (SourceRecipeGet)
             - (object)
               - recipe (RecipeGet)
-                     - id: 2
+                     - id: 2 (number)
                      - name: `Other recipe`
               - stockCards (array)
                     - (object)
-                        - id: 1
+                        - id: 1 (number)
                     - (object)
-                        - id: 2
+                        - id: 2 (number)
               - sourceRecipe (array)
                     - (object)
-                        - id: 1
+                        - id: 1 (number)
             - (object)
               - recipeStockCards (array)
                     - (RecipeStockCardGet)
                     - (RecipeStockCardGet)
-                         - id: 2
-                         - stockCard: 10
+                         - id: 2 (number)
+                         - stockCard: 10 (number)
             - (object)
               - sourceRecipe (array)
                     - (SourceRecipeGet)
@@ -516,12 +520,12 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
               - recipe (RecipeGet)
               - recipeStockCards (array)
                     - (object)
-                        - id: 1
+                        - id: 1 (number)
                     - (object)
-                        - id: 2
+                        - id: 2 (number)
               - sourceRecipe (array)
                     - (object)
-                        - id: 1
+                        - id: 1 (number)
             - (object)
               - recipeStockCards (array)
                     - (RecipeStockCardGet)
@@ -650,7 +654,7 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (array)
             - (Supplier)
 
@@ -659,7 +663,7 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (array)
             - (Supplier)
 
@@ -671,7 +675,7 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (ResponseBlank)
         
 ## Measurement Units Collection [/units]
@@ -716,13 +720,13 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (array)
             - (WorldCountry)
-                - id: 1
+                - id: 1 (number)
                 - title: `Czech republic`
             - (WorldCountry)
-                - id: 2
+                - id: 2 (number)
                 - title: `USA`
 
 ### List world continents [GET /system/world/continents]
@@ -730,13 +734,13 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 2
+            - count: 2 (number)
         - data (array)
             - (WorldContinent)
-                - id: 1
+                - id: 1 (number)
                 - title: `Europe`
             - (WorldContinent)
-                - id: 2
+                - id: 2 (number)
                 - title: `North America`
 
 ## User Collection [/users]
@@ -784,7 +788,7 @@ Change another user password (generates new one).
 + Response 200
     + Attributes
         - meta (ResponseMeta)
-            - count: 1
+            - count: 1 (number)
         - data (object)
             - newPassword: `Fnz-%SE-8MY-5` (string)
 
@@ -894,9 +898,6 @@ Change another user password (generates new one).
             - (object)
                 - stock (StockGet)
                     - branch: 1 (number)
-                    - recipes (array)
-                        - (object)
-                            - id: 1
                     - stockValue: 5
                 - branch (BranchGet)
 
@@ -999,7 +1000,8 @@ Does not include
 
 + Response 200 (application/json)
     + Attributes
-        - meta (array)
+        - meta (ResponseMeta)
+            - count: 13
         - data (array)
             - (object)
                 - transaction (TransactionGet)
@@ -1058,6 +1060,11 @@ Unload to negative
                 - stockCard (StockCardGet)
                 - unit (UnitGet)
                 - vatRate (VatRateGet)
+                
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseNotFound)
                 
 ### List stock cards in all stocks [GET /stocks/stock-cards]
 
@@ -1165,6 +1172,29 @@ FIFO method
         
 ## Stock Recipes Collection [/stocks/{stockId}/recipes]
 
+### List recipes associated with stock [GET /stocks/{stockId}/recipes]
+
++ Parameters
+    - stockId (number) - stock ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+                - stock (StockGet)
+                    - recipes (array)
+                        - (object)
+                            - id: 1 (number)
+                - recipes (array)
+                    - (RecipeGet)
+                        
+                
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - data (ResponseNotFound)
+
 ### Add recipe to stock [POST /stocks/{stockId}/recipes/{recipeId}/add]
 
 + Parameters
@@ -1267,6 +1297,11 @@ FIFO method
 - vatRate: null
 - priceIncVat: null
 
+## CategoryGet (object)
+- id: 11 (number),
+- categoryTitle: `Shelf stock` (string)
+- color: null
+
 ## RecipeGet (object)
 - id: `1` (number)
 - Include RecipeDef
@@ -1323,11 +1358,12 @@ FIFO method
 ## StockCardDef (object)
 - name: `Stock card name` (string, required)
 - unit: 2 (number, required)
+- code: 1 (number, optional)
+- category: 1 (number, optional)
 
 ## StockCardGet (object)
 - id: 1 (number)
 - Include StockCardDef
-- code: null (string, optional)
 
 ## StockStockCardGet (object)
 - quantity: `17.0000` (string)
@@ -1345,7 +1381,6 @@ FIFO method
 - name: `Kilogram` (string)
 - abbreviation: `kg` (string)
 - allowDecimal: true (boolean)
-- code: null (string, optional)
 - basicUnit: 1 (number)
 
 ## BasicUnitGet (object)
