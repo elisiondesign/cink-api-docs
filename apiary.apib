@@ -350,13 +350,13 @@ Get all category Items that were also mapped to stock recipes. If a category ite
         - data (array)
             - (object)
               - stockCard (StockCardGet)
-              - unit (UnitGet)
+              - displayUnit (UnitGet)
               - category (CategoryGet)
             - (object)
               - stockCard (StockCardGet)
                     - id: 2 (number)
                     - name: `Juice`
-              - unit (UnitGet)
+              - displayUnit (UnitGet)
               - category (CategoryGet)
               
 ### Get stock card detail [GET /stock-cards/{stockCardId}]
@@ -371,7 +371,7 @@ Get all category Items that were also mapped to stock recipes. If a category ite
         - data (array)
             - (object)
               - stockCard (StockCardGet)
-              - unit (UnitGet)
+              - displayUnit (UnitGet)
               - category (CategoryGet)
              
 + Response 404 (application/json)
@@ -678,6 +678,36 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
             - count: 1 (number)
         - data (ResponseBlank)
         
+
+## Basic Units Collection [/basic-units]
+### List basic units [GET /basic-units]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+              - basicUnit (BasicUnitGet)
+              
+### Get unit detail [GET /basic-units/{basicUnitId}/units]
+
++ Parameters
+    - basicUnitId (number) - Basic unit ID
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+              - displayUnit (UnitGet)
+             
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+        
+        
+
 ## Measurement Units Collection [/units]
 ### List units [GET /units]
 
@@ -686,7 +716,7 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
         - meta (array)
         - data (array)
             - (object)
-              - unit (UnitGet)
+              - displayUnit (UnitGet)
               - basicUnit (BasicUnitGet)
               
 ### Get unit detail [GET /units/{unitId}]
@@ -699,7 +729,7 @@ Exists, but not loading and unloading not supported. Therefore not usable now.
         - meta (array)
         - data (array)
             - (object)
-              - unit (UnitGet)
+              - displayUnit (UnitGet)
               - basicUnit (BasicUnitGet)
              
 + Response 404 (application/json)
@@ -985,7 +1015,7 @@ Unload to negative
 
 - If there is not enough resources in stock
 
-### List transactions [GET /stocks/transactions?limit={limit}&page={page}]
+### List transactions in company [GET /stocks/transactions?limit={limit}&page={page}]
 Returns info about historical transactions that includes
 - unload operations
 - load non-virtual operations
@@ -1001,7 +1031,23 @@ Does not include
 + Response 200 (application/json)
     + Attributes
         - meta (ResponseMeta)
-            - count: 13
+            - count: 1 // Use for pagination
+        - data (array)
+            - (object)
+                - transaction (TransactionGet)
+                - stockItem (StockItemGet)
+                
+### List transactions in stock [GET /stocks/{stockId}/transactions?limit={limit}&page={page}]
+
++ Parameters
+    - stockId (number) - Stock ID
+    - limit (number, optional, `10`) - Pagination limit
+    - page (number, optional, `1`) - Pagination offset
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1 // Use for pagination
         - data (array)
             - (object)
                 - transaction (TransactionGet)
@@ -1058,7 +1104,7 @@ Unload to negative
             - (object)
                 - stockStockCard (StockStockCardGet)
                 - stockCard (StockCardGet)
-                - unit (UnitGet)
+                - displayUnit (UnitGet)
                 - vatRate (VatRateGet)
                 
 + Response 404 (application/json)
@@ -1075,7 +1121,7 @@ Unload to negative
             - (object)
                 - stockStockCard (StockStockCardGet)
                 - stockCard (StockCardGet)
-                - unit (UnitGet)
+                - displayUnit (UnitGet)
                 - vatRate (VatRateGet)
                 
 ### Associate stock card with stock [PUT /stocks/{stockId}/stock-cards/{stockCardId}]
@@ -1357,7 +1403,7 @@ FIFO method
 
 ## StockCardDef (object)
 - name: `Stock card name` (string, required)
-- unit: 2 (number, required)
+- displayUnit: 2 (number, required)
 - code: 1 (number, optional)
 - category: 1 (number, optional)
 
@@ -1415,12 +1461,12 @@ FIFO method
 
 ## RecipeStockCardGet (object)
 - id: `1` (number)
-- quantity: 8 (number) - how many times stock card is included in recipe
+- count: 8 (number) - how many times stock card is included in recipe
 - stockCard: 13 (number)
 
 ## SourceRecipeGet
 - id: `1` (number)
-- quantity: 8 (number) - how many times some recipe is included in recipe
+- count: 8 (number) - how many times some recipe is included in recipe
 - containsRecipe: 13 (number)
 
 ## StockGet (object)
