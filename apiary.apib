@@ -18,7 +18,7 @@ For testing purposes you can use Dredd, see Apiary documentation.
 **Mocking:**
 There is available mocking Apiary endpoint which use can request e.g. via Postman. See URL endpoint in Inspector tab.
 
-+ Version: 0.1.x
++ Version: 0.2.x
 
 ## Response codes
 API uses standard REST API response codes.
@@ -38,6 +38,19 @@ Item | Položka | -
 Package | Balení | Pakcages contains multiple items with same item ID.
 Recipe | Receptura | Recipes consists of items.
 Stock | Sklad | -
+
+## Development notes
+### Measurement units
+- Množství (quantity) jsou vždy uložena v základní jednotkách (basic units) - tj. gramy, mililitry a kusy
+- BE provádí převod na základní jednotky pomocí parametru ID jednotky, který FE zasílá
+- v GET responses server vrací množství v jednotce, ve které je definována karta. Ne v jednotce, ve které uživatel provedl naskladnění
+
+### Prices
+- Server očekává a vrací ceny v **haléřích**. Úkolem FE je převést korunovou hodnotu na haléře
+  
+### Count in recipes
+- Receptury obsahují počet (**count**) - např. skladových karet
+- Toto je bezrozměrná jednotka, není tedy potřeba dohledávat základní jednotku
 
 ## Authentication [/]
 
@@ -185,11 +198,9 @@ Stock | Sklad | -
         - data (array)
             - (object)
               - stock (StockGet)
-                    + stockValue: 100
           - (object)
               + stock (StockGet)
                     + id: 2 (number)
-                    + stockValue: null - Purchase price (excl. VAT) of items within stock. If zero then the value is null.
               
 + Response 404 (application/json)
     + Attributes
@@ -1102,8 +1113,9 @@ Unload to negative
         - meta (array)
         - data (array)
             - (object)
-                - stockStockCard (StockStockCardGet)
+               - stockStockCard (StockStockCardGet)
                 - stockCard (StockCardGet)
+                - category (CategoryGet)
                 - displayUnit (UnitGet)
                 - vatRate (VatRateGet)
                 
@@ -1119,8 +1131,10 @@ Unload to negative
         - meta (array)
         - data (array)
             - (object)
+                - stock (StockGet)
                 - stockStockCard (StockStockCardGet)
                 - stockCard (StockCardGet)
+                - category (CategoryGet)
                 - displayUnit (UnitGet)
                 - vatRate (VatRateGet)
                 
@@ -1145,6 +1159,9 @@ Unload to negative
         
         
 ### Load stock card [PATCH /stocks/{stockId}/stock-cards/{stockCardId}/load]
+
+Potřeba uvést ceny s DPH anebo bez DPH, ne obojí. Cenu server **očekává v haléřích**
+
 **Virtual** 
 - pokud true, nedochází k naskladňování fyzické skladové položky. Dochází pouze ke zvýšení množství na StockStockCard (množství dané karty na daném skladě)
 - Vhodné po narovnání rozdílu mezi quantity evidované a quantity skutečné. K rozdílu dojde, pokud vyskladnění dojde do záporných hodnot
@@ -1158,8 +1175,10 @@ Unload to negative
 + Request (application/json)
     + Attributes (object)
         - quantity: 100 (number)
-        - virtual: true (boolean)
-        - purchase_price: 5 (number)
+        - unit: 1 (number)
+        - virtual: true (boolean, optional) // default: false
+        - priceExcVat: 5 (number, optional)
+        - priceIncVat: 5 (number, optional)
 
 + Response 200 (application/json)
     + Attributes
@@ -1172,7 +1191,7 @@ Unload to negative
         - error (ResponseNotFound)
         
         
-### Unload stock card [PATCH /stocks/{stockId}/stock-cards/{stockCardId}/unload]
+### Unload stock card [PATCH /stocks/{stockId}/rdsstock-cards/{stockCardId}/unload]
 FIFO method
 
 + Parameters
@@ -1182,6 +1201,7 @@ FIFO method
 + Request (application/json)
     + Attributes (object)
         - quantity: 100 (number)
+        - unit: 1 (number)
 
 + Response 200 (application/json)
     + Attributes
