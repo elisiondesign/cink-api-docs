@@ -71,6 +71,7 @@ Stock | Sklad | -
             - company_id: 973 (number)
             - role: 1 (number)
             - role_name: `Admin` (string)
+            - branches: 1, 2(array)
 
 + Response 401 (application/json)
 401 User not found
@@ -206,12 +207,31 @@ Stock | Sklad | -
     + Attributes
         - meta (array)
         - error (ResponseNotFound)
+        
+
+### Balance quantities in stocks [POST /branches/{branchId}/balance-stock-quantities]
+Balance actual and recorded quantities in all stocks.
++ Request (application/json)
+    + Attributes (BranchDef)
+
++ Response 201 (application/json)
+    + Attributes
+        - meta (array)
+        - data (object)
+            - Pomerančový džus 0,3l: `-99 l -> 1 l`
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
 
 ## Cash desk [/cash-desk]
 Cash system related endpoints.
 
 ### Synchronize [POST /cash-desk/synchronize]
 Map all new items from cash system to stock system.
+Admin can synchronize all the items if `branch-id` in header is set to `null`
+If `branch-id` is set, synchronize occurs only for items in selected branch
 
 + Response 200 (application/json)
     + Attributes
@@ -266,6 +286,27 @@ Get all category Items that were also mapped to stock recipes. If a category ite
                       - id: 2 (number)
                   - recipe (RecipeGet)
                       - id: 2  (number)
+                      
+### List company categories [GET /cash-desk/categories]
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+        - data (array)
+            - (object)
+                  - category (CategoryGet)
+                  
+### Get synchronized / total category items count [GET /cash-desk/synchronized-count]
+When `branch-id` header is set, returns count only in selected branch
+Otherwise it returns counts in whole company
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+        - data (array)
+            - (object)
+                  - categoryItemsCount: 13
+                  - syncedItemsCount: 9
 
 ## Company Collection [/companies]
 
@@ -352,6 +393,48 @@ Get all category Items that were also mapped to stock recipes. If a category ite
 
 ## Stock cards Collection [/stock-cards]
 
+### List recipes associated with stock card [GET /stock-cards/{stockCardId}/recipes]
++ Parameters
+    - stockCardId (number) - Stock card ID
+    
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+              - recipe (RecipeGet)
+              - recipeStockCards (RecipeStockCardGet)
+                 - recipe: 1 (number)
+        
+### List transactions associated with stock card [GET /stock-cards/{stockCardId}/transactions]         
++ Parameters
+    - stockCardId (number) - Stock card ID
+    
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+                - transaction (TransactionGet)
+                - displayUnit (UnitGet)
+                - stockItem (StockItemGet)
+                - user (UserGet)
+                - stock (StockGet)
+                 
+### List stocks associated with stock card [GET /stock-cards/{stockCardId}/stocks]         
++ Parameters
+    - stockCardId (number) - Stock card ID
+    
++ Response 200 (application/json)
+    + Attributes
+        - meta (array)
+        - data (array)
+            - (object)
+                - stockStockCard (StockStockCardGet)
+                - category (CategoryGet)
+                - stock (StockGet)
+                - displayUnit (UnitGet)
+
 ### List stock cards [GET /stock-cards]
 
 + Response 200 (application/json)
@@ -400,7 +483,10 @@ Get all category Items that were also mapped to stock recipes. If a category ite
         - meta (array)
         - data (ResponseSuccess)
         
-+ Response 404 (application/json)
++ Response 404 (application/json)            
+        - (object)
+                - transaction (TransactionGet)
+                - stockItem (StockItemGet)
     + Attributes
         - meta (array)
         - error (ResponseNotFound)
@@ -1138,6 +1224,23 @@ Unload to negative
                 - displayUnit (UnitGet)
                 - vatRate (VatRateGet)
                 
+
+### Balance quantities in stocks [POST /stocks/{stockId}/stock-cards/{stockCardId}/balance-quantity]
+Balance actual and recorded quantities of a given stock card in given stock.
++ Request (application/json)
+    + Attributes (BranchDef)
+
++ Response 201 (application/json)
+    + Attributes
+        - meta (array)
+        - data (object)
+            - Pomerančový džus 0,3l: `-99 l -> 1 l`
+        
++ Response 404 (application/json)
+    + Attributes
+        - meta (array)
+        - error (ResponseNotFound)
+                
 ### Associate stock card with stock [PUT /stocks/{stockId}/stock-cards/{stockCardId}]
 + Parameters
     - stockId (number) - Stock ID
@@ -1436,7 +1539,10 @@ FIFO method
 - quantityMinimal: `3.0000` (string)
 - quantityOptimal: null
 - stockCard: 1 (number)
-- stockCardQuantity: `662.0000` (string)
+- stockCardQuantity: 662.0000 (number)
+- avgPriceIncVat: 6.5 (number)
+- avgPriceExcVat: 5.5 (number)
+
 
 ## VatRateGet (object)
 - id: 1 (number)
@@ -1482,7 +1588,6 @@ FIFO method
 ## RecipeStockCardGet (object)
 - id: `1` (number)
 - count: 8 (number) - how many times stock card is included in recipe
-- stockCard: 13 (number)
 
 ## SourceRecipeGet
 - id: `1` (number)
