@@ -22,7 +22,7 @@ There is available mocking Apiary endpoint which use can request e.g. via Postma
 
 ## Response codes
 API uses standard REST API response codes.
-
+/-
 HTTP status | Description
 --- | ---
 200 | Ok (Found / Success)
@@ -207,6 +207,21 @@ Stock | Sklad | -
     + Attributes
         - meta (array)
         - error (ResponseNotFound)
+        
+### Get branches current user belongs to [GET /branches/me]
+
+
++ Response 200 (application/json)
+    + Attributes
+        - meta (ResponseMeta)
+            - count: 1 (number)
+        - data (array)
+            - (object)
+              - branch (array)
+                      - (BranchGet)
+                      - (BranchGet)
+                        - id: 2 (number)
+                        - name: `Second branch`
         
 
 ### Balance quantities in stocks [POST /branches/{branchId}/balance-stock-quantities]
